@@ -1,0 +1,3 @@
+[submodule "Lyra/Plugins/FlatNodes"]
+	path = Lyra/Plugins/FlatNodes
+	url = https://github.com/brumenn/FlatNodes.git
