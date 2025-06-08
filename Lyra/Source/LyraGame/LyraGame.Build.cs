@@ -26,6 +26,9 @@ public class LyraGame : ModuleRules
 				"CoreUObject",
 				"ApplicationCore",
 				"Engine",
+				"GameplayTags",
+				"GameplayTasks",
+				"GameplayAbilities",
 				"ModularGameplay",
                 "ModularGameplayActors",
             }
