@@ -2,6 +2,7 @@
 
 
 #include "Animation/LyraAnimInstance.h"
+#include "Misc/DataValidation.h"
 
 ULyraAnimInstance::ULyraAnimInstance(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -9,12 +10,12 @@ ULyraAnimInstance::ULyraAnimInstance(const FObjectInitializer& ObjectInitializer
 }
 
 #if WITH_EDITOR
-EDataValidationResult ULyraAnimInstance::IsDataValid(TArray<FText>& ValidationErrors)
+EDataValidationResult ULyraAnimInstance::IsDataValid(FDataValidationContext& Context) const
 {
-	Super::IsDataValid(ValidationErrors);
+	Super::IsDataValid(Context);
 
-	GameplayTagPropertyMap.IsDataValid(this, ValidationErrors);
+	GameplayTagPropertyMap.IsDataValid(this, Context);
 
-	return ((ValidationErrors.Num() > 0) ? EDataValidationResult::Invalid : EDataValidationResult::Valid);
+	return Context.GetNumErrors() > 0 ? EDataValidationResult::Invalid : EDataValidationResult::Valid;
 }
 #endif
