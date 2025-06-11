@@ -33,5 +33,12 @@ public class LyraGame : ModuleRules
                 "ModularGameplayActors",
             }
 		);
+
+		PrivateDependencyModuleNames.AddRange(
+			new string[] {
+				"InputCore",
+                "EnhancedInput"
+            }
+		);
 	}
 }
