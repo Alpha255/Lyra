@@ -17,7 +17,7 @@ class LYRAGAME_API ULyraEquipmentInstance : public UObject
 public:
 	ULyraEquipmentInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	UFUNCTION(BlueprintPure, Category = "Equipment")
+	UFUNCTION(BlueprintPure, Category="Equipment")
 	TArray<AActor*> GetSpawnActors() const { return SpawnedActors; }
 
 private:
