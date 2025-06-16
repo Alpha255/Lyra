@@ -31,6 +31,7 @@ public class LyraGame : ModuleRules
 				"GameplayAbilities",
 				"ModularGameplay",
                 "ModularGameplayActors",
+                "GameFeatures"
             }
 		);
 

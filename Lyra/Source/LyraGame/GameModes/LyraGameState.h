@@ -14,4 +14,10 @@ class LYRAGAME_API ALyraGameState : public AModularGameStateBase
 {
 	GENERATED_BODY()
 	
+public:
+	ALyraGameState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+private:
+
+	TObjectPtr<class ULyraExperienceManagerComponent> ExperienceMgrComp;
 };

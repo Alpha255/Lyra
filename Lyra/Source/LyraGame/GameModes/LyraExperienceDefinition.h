@@ -25,4 +25,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Gameplay")
 	TObjectPtr<const class ULyraPawnData> DefaultPawnData;
+
+	UPROPERTY(EditDefaultsOnly, Instanced, Category="Actions")
+	TArray<TObjectPtr<class UGameFeatureAction>> GameFeatureActions;
 };

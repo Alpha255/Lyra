@@ -16,4 +16,9 @@ class LYRAGAME_API ALyraGameMode : public AModularGameModeBase
 	
 public:
 	ALyraGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+protected:
+	void OnSetExperience();
 };

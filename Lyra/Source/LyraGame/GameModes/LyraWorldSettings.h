@@ -17,7 +17,8 @@ class LYRAGAME_API ALyraWorldSettings : public AWorldSettings
 public:
 	ALyraWorldSettings(const FObjectInitializer& ObjectInitializer);
 
+	FPrimaryAssetId GetGameplayExperience() const;
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="GameMode")
-	TSoftClassPtr<class ULyraExperienceDefinition> DefaultGameplayExperience;
+	TSoftClassPtr<class ULyraExperienceDefinition> GameplayExperience;
 };

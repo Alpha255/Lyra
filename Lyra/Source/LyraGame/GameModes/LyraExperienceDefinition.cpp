@@ -2,6 +2,7 @@
 
 
 #include "GameModes/LyraExperienceDefinition.h"
+#include "GameFeatureAction.h"
 
 EDataValidationResult ULyraExperienceDefinition::IsDataValid(FDataValidationContext& Context) const
 {
