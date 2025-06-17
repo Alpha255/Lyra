@@ -10,6 +10,8 @@
  * 
  */
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLyraExperienceLoaded, const class ULyraExperienceDefinition*);
+
 enum class ELyraExperienceLoadState
 {
 	Unloaded,
@@ -37,9 +39,15 @@ private:
 	void OnRep_Experience();
 
 	void StartLoadExperience();
+	void OnExperienceLoaded();
+	void ApplyGameplayActions();
 
 	ELyraExperienceLoadState ExperienceLoadState = ELyraExperienceLoadState::Unloaded;
 
 	UPROPERTY(ReplicatedUsing=OnRep_Experience)
 	TObjectPtr<const class ULyraExperienceDefinition> CurrentExperience;
+
+	FOnLyraExperienceLoaded OnExperienceLoaded_HighPriority;
+	FOnLyraExperienceLoaded OnExperienceLoaded_NormalPriority;
+	FOnLyraExperienceLoaded OnExperienceLoaded_LowPriority;
 };

@@ -12,6 +12,16 @@ ALyraWorldSettings::ALyraWorldSettings(const FObjectInitializer& ObjectInitializ
 
 FPrimaryAssetId ALyraWorldSettings::GetGameplayExperience() const
 {
+	for (auto& Path : ULyraAssetManager::Get().GetPrimaryAssetPathMap())
+	{
+		UE_LOG(LogLyra, Warning, TEXT("Path:%s <=> PrimaryAssetId:%s"), *Path.Key.ToString(), *Path.Value.PrimaryAssetName.ToString())
+	}
+
+	for (auto& Redi : ULyraAssetManager::Get().GetAssetPathRedirects())
+	{
+		UE_LOG(LogLyra, Warning, TEXT("SrcPath:%s <=> RedirectPath:%s"), *Redi.Key.ToString(), *Redi.Value.ToString())
+	}
+
 	FPrimaryAssetId AssetId;
 	if (!GameplayExperience.IsNull())
 	{

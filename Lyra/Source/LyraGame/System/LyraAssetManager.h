@@ -13,5 +13,10 @@ UCLASS()
 class LYRAGAME_API ULyraAssetManager : public UAssetManager
 {
 	GENERATED_BODY()
-	
+
+public:
+	static ULyraAssetManager& Get();
+
+	const TMap<FSoftObjectPath, FPrimaryAssetId>& GetPrimaryAssetPathMap() const { return AssetPathMap; }
+	const TMap<FSoftObjectPath, FSoftObjectPath>& GetAssetPathRedirects() const { return AssetPathRedirects; }
 };

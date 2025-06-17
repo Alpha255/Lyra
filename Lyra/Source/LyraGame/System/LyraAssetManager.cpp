@@ -3,3 +3,10 @@
 
 #include "System/LyraAssetManager.h"
 
+ULyraAssetManager& ULyraAssetManager::Get()
+{
+	check(GEngine);
+
+	return *Cast<ULyraAssetManager>(&UAssetManager::Get());
+}
+
