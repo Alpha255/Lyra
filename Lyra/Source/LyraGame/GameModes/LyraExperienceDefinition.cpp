@@ -10,3 +10,18 @@ EDataValidationResult ULyraExperienceDefinition::IsDataValid(FDataValidationCont
 
 	return Result;
 }
+
+#if WITH_EDITORONLY_DATA
+void ULyraExperienceDefinition::UpdateAssetBundleData()
+{
+	Super::UpdateAssetBundleData();
+
+	for (auto Action : GameFeatureActions)
+	{
+		if (Action)
+		{
+			Action->AddAdditionalAssetBundleData(AssetBundleData);
+		}
+	}
+}
+#endif

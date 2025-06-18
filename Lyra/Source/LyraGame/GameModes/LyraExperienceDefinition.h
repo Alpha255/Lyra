@@ -20,6 +20,10 @@ public:
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif
 
+#if WITH_EDITORONLY_DATA
+	virtual void UpdateAssetBundleData() override;
+#endif
+
 	UPROPERTY(EditDefaultsOnly, Category="Gameplay")
 	TArray<FString> GameFeaturesToEnable;
 

@@ -38,7 +38,8 @@ public class LyraGame : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[] {
 				"InputCore",
-                "EnhancedInput"
+                "EnhancedInput",
+				"NetCore"
             }
 		);
 	}

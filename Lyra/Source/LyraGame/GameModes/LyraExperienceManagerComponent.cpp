@@ -106,10 +106,12 @@ void ULyraExperienceManagerComponent::ApplyGameplayActions()
 				{
 					Action->OnGameFeatureRegistering();
 					Action->OnGameFeatureLoading();
-					Action->OnGameFeatureActivating();
+					Action->OnGameFeatureActivating(Context);
 				}
 			}
 		};
+
+	ActivateActionList(CurrentExperience->GameFeatureActions);
 
 	ExperienceLoadState = ELyraExperienceLoadState::Loaded;
 
