@@ -111,8 +111,10 @@ public:
 	}
 
 	FLyraCharacterPartHandle AddEntry(const FLyraCharacterPart& Part);
-	void RemoveEntry(const FLyraCharacterPart& Part);
+	void RemoveEntry(FLyraCharacterPartHandle Part);
 	void RemoveAllEntries(bool bBroadcastChanges);
+
+	void SetOwner(class ULyraCharacterPartsPawnComponent* InOwner) { Owner = InOwner; }
 private:
 	friend class ULyraCharacterPartsPawnComponent;
 

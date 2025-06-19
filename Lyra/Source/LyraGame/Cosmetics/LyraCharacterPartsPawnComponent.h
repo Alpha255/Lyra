@@ -34,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category="Cosmetics")
 	void RemoveAllParts();
 
+	class USkeletalMeshComponent* GetSkeletalMeshComponent() const;
+	USceneComponent* GetSceneComponentAttachTo() const;
+
 	void BroadcastPartsChanged();
 
 	UPROPERTY(BlueprintAssignable, Category="Cosmetics", BlueprintCallable)

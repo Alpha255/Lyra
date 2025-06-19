@@ -3,6 +3,7 @@
 
 #include "Cosmetics/LyraCharacterPartsPawnComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "GameFramework/Character.h"
 
 ULyraCharacterPartsPawnComponent::ULyraCharacterPartsPawnComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -19,6 +20,7 @@ void ULyraCharacterPartsPawnComponent::GetLifetimeReplicatedProps(TArray<FLifeti
 
 void ULyraCharacterPartsPawnComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	PartList.RemoveAllEntries(false);
 }
 
 FLyraCharacterPartHandle ULyraCharacterPartsPawnComponent::AddPart(const FLyraCharacterPart& Part)
@@ -28,17 +30,49 @@ FLyraCharacterPartHandle ULyraCharacterPartsPawnComponent::AddPart(const FLyraCh
 
 void ULyraCharacterPartsPawnComponent::OnRegister()
 {
+	Super::OnRegister();
+
+	if (!IsTemplate())
+	{
+		PartList.SetOwner(this);
+	}
 }
 
 void ULyraCharacterPartsPawnComponent::RemovePart(FLyraCharacterPartHandle Handle)
 {
+	PartList.RemoveEntry(Handle);
 }
 
 void ULyraCharacterPartsPawnComponent::RemoveAllParts()
 {
-
+	PartList.RemoveAllEntries(true);
 }
 
 void ULyraCharacterPartsPawnComponent::BroadcastPartsChanged()
 {
+	OnPartsChanged.Broadcast(this);
+}
+
+USkeletalMeshComponent* ULyraCharacterPartsPawnComponent::GetSkeletalMeshComponent() const
+{
+	if (auto Owner = Cast<ACharacter>(GetOwner()))
+	{
+		return Owner->GetMesh();
+	}
+
+	return nullptr;
+}
+
+USceneComponent* ULyraCharacterPartsPawnComponent::GetSceneComponentAttachTo() const
+{
+	if (auto SkeletalMeshComp = GetSkeletalMeshComponent())
+	{
+		return SkeletalMeshComp;
+	}
+	else if (auto Owner = GetOwner())
+	{
+		return Owner->GetRootComponent();
+	}
+
+	return nullptr;
 }

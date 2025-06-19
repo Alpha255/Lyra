@@ -45,7 +45,7 @@ void ULyraExperienceManagerComponent::StartLoadExperience()
 	check(CurrentExperience && ExperienceLoadState == ELyraExperienceLoadState::Unloaded);
 
 	UE_LOG(LogLyra, Log, TEXT("Start load experience data: %s, %s"), *CurrentExperience->GetPrimaryAssetId().ToString(), 
-		*GetClientServerContextString());
+		*GetClientServerContextString(this));
 
 	ExperienceLoadState = ELyraExperienceLoadState::Loading;
 
@@ -130,7 +130,7 @@ void ULyraExperienceManagerComponent::OnExperienceLoaded()
 	check(ExperienceLoadState == ELyraExperienceLoadState::Loading && CurrentExperience);
 
 	UE_LOG(LogLyra, Log, TEXT("Load experience data completed: %s, %s"), *CurrentExperience->GetPrimaryAssetId().ToString(),
-		*GetClientServerContextString());
+		*GetClientServerContextString(this));
 
 	ApplyGameplayActions();
 }
