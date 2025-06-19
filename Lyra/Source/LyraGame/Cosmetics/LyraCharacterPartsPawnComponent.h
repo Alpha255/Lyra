@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/PawnComponent.h"
 #include "Cosmetics/LyraCharacterPart.h"
+#include "Cosmetics/LyraCosmeticsAnimation.h"
 
 #include "LyraCharacterPartsPawnComponent.generated.h"
 
@@ -44,4 +45,7 @@ public:
 private:
 	UPROPERTY(Replicated, Transient)
 	FLyraCharacterPartList PartList;
+
+	UPROPERTY(EditAnywhere, Category="Cosmetics")
+	FLyraAnimBodyStyleSelectionSet BodyMeshes;
 };

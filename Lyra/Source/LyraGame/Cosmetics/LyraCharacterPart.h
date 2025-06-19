@@ -49,7 +49,7 @@ struct FLyraCharacterPart
 	FName SocketName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ELyraCharacterCollisionMode CollisionMode;
+	ELyraCharacterCollisionMode CollisionMode = ELyraCharacterCollisionMode::NoCollision;
 
 	static bool IsSamePart(const FLyraCharacterPart& A, const FLyraCharacterPart& B)
 	{
