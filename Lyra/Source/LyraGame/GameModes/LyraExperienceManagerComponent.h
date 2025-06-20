@@ -10,7 +10,7 @@
  * 
  */
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnLyraExperienceLoaded, const class ULyraExperienceDefinition*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FLyraOnExperienceLoaded, const class ULyraExperienceDefinition*);
 
 enum class ELyraExperienceLoadState
 {
@@ -21,6 +21,13 @@ enum class ELyraExperienceLoadState
 	ExecutingActions,
 	Loaded,
 	Deactivating
+};
+
+enum class ELyraExperienceLoadPriority
+{
+	Low,
+	Normal,
+	High
 };
 
 
@@ -34,6 +41,11 @@ public:
 
 	void SetExperience(FPrimaryAssetId AssetId);
 
+	void OnExperienceLoaded(FLyraOnExperienceLoaded::FDelegate&& Delegate, ELyraExperienceLoadPriority Priority);
+
+	bool IsExperienceLoaded() { return ExperienceLoadState == ELyraExperienceLoadState::Loaded && CurrentExperience != nullptr; }
+
+	const class ULyraExperienceDefinition* GetCurrentExperience() const;
 private:
 	UFUNCTION()
 	void OnRep_Experience();
@@ -47,7 +59,5 @@ private:
 	UPROPERTY(ReplicatedUsing=OnRep_Experience)
 	TObjectPtr<const class ULyraExperienceDefinition> CurrentExperience;
 
-	FOnLyraExperienceLoaded OnExperienceLoaded_HighPriority;
-	FOnLyraExperienceLoaded OnExperienceLoaded_NormalPriority;
-	FOnLyraExperienceLoaded OnExperienceLoaded_LowPriority;
+	TArray<FLyraOnExperienceLoaded> OnExperienceLoadedDelegates;
 };

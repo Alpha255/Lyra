@@ -14,6 +14,11 @@ ULyraExperienceManagerComponent::ULyraExperienceManagerComponent(const FObjectIn
 	: Super(ObjectInitializer)
 {
 	SetIsReplicatedByDefault(true);
+
+	for (int32 Index = 0; Index <= static_cast<int32>(ELyraExperienceLoadPriority::High); ++Index)
+	{
+		OnExperienceLoadedDelegates.AddDefaulted();
+	}
 }
 
 void ULyraExperienceManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -33,6 +38,18 @@ void ULyraExperienceManagerComponent::SetExperience(FPrimaryAssetId AssetId)
 	check(CurrentExperience);
 
 	StartLoadExperience(); // On server
+}
+
+void ULyraExperienceManagerComponent::OnExperienceLoaded(FLyraOnExperienceLoaded::FDelegate&& Delegate, ELyraExperienceLoadPriority Priority)
+{
+	if (IsExperienceLoaded())
+	{
+		Delegate.Execute(CurrentExperience);
+	}
+	else
+	{
+		OnExperienceLoadedDelegates[static_cast<int32>(Priority)].Add(MoveTemp(Delegate));
+	}
 }
 
 void ULyraExperienceManagerComponent::OnRep_Experience()
@@ -115,13 +132,10 @@ void ULyraExperienceManagerComponent::ApplyGameplayActions()
 
 	ExperienceLoadState = ELyraExperienceLoadState::Loaded;
 
-	for (auto Delegate : TArray<FOnLyraExperienceLoaded*>{ 
-		&OnExperienceLoaded_HighPriority, 
-		&OnExperienceLoaded_NormalPriority, 
-		&OnExperienceLoaded_LowPriority })
+	for (auto& Delegate : OnExperienceLoadedDelegates)
 	{
-		Delegate->Broadcast(CurrentExperience);
-		Delegate->Clear();
+		Delegate.Broadcast(CurrentExperience);
+		Delegate.Clear();
 	}
 }
 
@@ -133,4 +147,10 @@ void ULyraExperienceManagerComponent::OnExperienceLoaded()
 		*GetClientServerContextString(this));
 
 	ApplyGameplayActions();
+}
+
+const ULyraExperienceDefinition* ULyraExperienceManagerComponent::GetCurrentExperience() const
+{
+	check(ExperienceLoadState == ELyraExperienceLoadState::Loaded && CurrentExperience != nullptr);
+	return CurrentExperience;
 }

@@ -16,4 +16,18 @@ class LYRAGAME_API ALyraPlayerState : public AModularPlayerState
 	
 public:
 	ALyraPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	virtual void PostInitializeComponents() override;
+
+	const class ULyraPawnData* GetPawnData() const { return PawnData; }
+
+	void SetPawnData(const class ULyraPawnData* InPawnData);
+protected:
+	UFUNCTION()
+	void OnRep_PawnData();
+
+	UPROPERTY(ReplicatedUsing=OnRep_PawnData)
+	TObjectPtr<const class ULyraPawnData> PawnData;
+
+private:
 };
