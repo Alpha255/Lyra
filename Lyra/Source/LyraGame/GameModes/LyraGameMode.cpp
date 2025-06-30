@@ -3,6 +3,7 @@
 
 #include "GameModes/LyraGameMode.h"
 #include "Character/LyraCharacter.h"
+#include "Character/LyraPawnData.h"
 #include "LyraGameState.h"
 #include "Player/LyraPlayerController.h"
 #include "Player/LyraPlayerState.h"
@@ -30,11 +31,40 @@ void ALyraGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 
 UClass* ALyraGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
-	return nullptr;
+	if (auto PawnData = GetPawnData(InController))
+	{
+		if (PawnData->PawnClass)
+		{
+			return PawnData->PawnClass;
+		}
+	}
+
+	return Super::GetDefaultPawnClassForController(InController);
 }
 
 APawn* ALyraGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform)
 {
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Instigator = GetInstigator();
+	SpawnParams.ObjectFlags |= RF_Transient;
+	SpawnParams.bDeferConstruction = true;
+
+	if (auto PawnClass = GetDefaultPawnClassForController(NewPlayer))
+	{
+		if (auto SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnParams))
+		{
+
+		}
+		else
+		{
+			UE_LOG(LogLyra, Error, TEXT("LyraGameMode: Unable to spawn pawn of class [%s] at [%s]"), *GetNameSafe(PawnClass), *SpawnTransform.ToHumanReadableString());
+		}
+	}
+	else
+	{
+		UE_LOG(LogLyra, Error, TEXT("LyraGameMode: Unable to spawn pawn due to null pawn class"));
+	}
+
 	return nullptr;
 }
 
@@ -45,6 +75,14 @@ bool ALyraGameMode::ShouldSpawnAtStartSpot(AController* Player)
 
 void ALyraGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
+	check(GameState);
+	auto ExperienceMgrComp = GameState->FindComponentByClass<ULyraExperienceManagerComponent>();
+	check(ExperienceMgrComp);
+
+	if (ExperienceMgrComp->IsExperienceLoaded())
+	{
+		Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+	}
 }
 
 AActor* ALyraGameMode::ChoosePlayerStart_Implementation(AController* Player)
@@ -110,6 +148,17 @@ void ALyraGameMode::GenericPlayerInitialization(AController* NewPlayer)
 
 void ALyraGameMode::FailedToRestartPlayer(AController* NewPlayer)
 {
+	Super::FailedToRestartPlayer(NewPlayer);
+
+	if (auto PawnClass = GetDefaultPawnClassForController(NewPlayer))
+	{
+		if (auto Controller = Cast<APlayerController>(NewPlayer))
+		{
+			if (PlayerCanRestart(Controller))
+			{
+			}
+		}
+	}
 }
 
 const ULyraPawnData* ALyraGameMode::GetPawnData(const AController* Controller) const
