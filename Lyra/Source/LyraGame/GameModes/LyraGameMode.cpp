@@ -4,9 +4,12 @@
 #include "GameModes/LyraGameMode.h"
 #include "Character/LyraCharacter.h"
 #include "Character/LyraPawnData.h"
+#include "Character/LyraPawnComponent.h"
 #include "LyraGameState.h"
 #include "Player/LyraPlayerController.h"
 #include "Player/LyraPlayerState.h"
+#include "Player/LyraPlayerSpawnManagerComponent.h"
+#include "Player/LyraPlayerBotController.h"
 #include "GameModes/LyraWorldSettings.h"
 #include "GameModes/LyraExperienceManagerComponent.h"
 #include "GameModes/LyraExperienceDefinition.h"
@@ -53,7 +56,20 @@ APawn* ALyraGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* Ne
 	{
 		if (auto SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnParams))
 		{
+			if (auto PawnComp = ULyraPawnComponent::GetPawnComponent(SpawnedPawn))
+			{
+				if (auto PawnData = GetPawnData(NewPlayer))
+				{
+					PawnComp->SetPawnData(PawnData);
+				}
+				else
+				{
+					UE_LOG(LogLyra, Error, TEXT("LyraGameMode: Unable to set PawnData on the spawned pawn [%s]."), *GetNameSafe(SpawnedPawn));
+				}
+			}
 
+			SpawnedPawn->FinishSpawning(SpawnTransform);
+			return SpawnedPawn;
 		}
 		else
 		{
@@ -87,11 +103,22 @@ void ALyraGameMode::HandleStartingNewPlayer_Implementation(APlayerController* Ne
 
 AActor* ALyraGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
-	return nullptr;
+	if (auto PlayerSpawnMgrComp = GameState->FindComponentByClass<ULyraPlayerSpawnManagerComponent>())
+	{
+		return PlayerSpawnMgrComp->ChoosePlayerStart(Player);
+	}
+
+	return Super::ChoosePlayerStart_Implementation(Player);
 }
 
 void ALyraGameMode::FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation)
 {
+	if (auto PlayerSpawnMgrComp = GameState->FindComponentByClass<ULyraPlayerSpawnManagerComponent>())
+	{
+		return PlayerSpawnMgrComp->FinishRestartPlayer(NewPlayer, StartRotation);
+	}
+
+	return Super::FinishRestartPlayer(NewPlayer, StartRotation);
 }
 
 bool ALyraGameMode::PlayerCanRestart_Implementation(APlayerController* Player)
@@ -112,6 +139,10 @@ bool ALyraGameMode::PlayerCanRestart_Implementation(APlayerController* Player)
 	}
 
 	// PlayerSpawningManagerComp
+	if (auto PlayerSpawnMgrComp = GameState->FindComponentByClass<ULyraPlayerSpawnManagerComponent>())
+	{
+		return true;
+	}
 
 	return false;
 }
@@ -139,11 +170,14 @@ void ALyraGameMode::InitGameState()
 
 bool ALyraGameMode::UpdatePlayerStartSpot(AController* Player, const FString& Portal, FString& OutErrorMessage)
 {
-	return false;
+	return true;
 }
 
 void ALyraGameMode::GenericPlayerInitialization(AController* NewPlayer)
 {
+	Super::GenericPlayerInitialization(NewPlayer);
+
+	OnLyraPlayerInitialized.Broadcast(this, NewPlayer);
 }
 
 void ALyraGameMode::FailedToRestartPlayer(AController* NewPlayer)
@@ -156,8 +190,21 @@ void ALyraGameMode::FailedToRestartPlayer(AController* NewPlayer)
 		{
 			if (PlayerCanRestart(Controller))
 			{
+				RequestPlayerRestartNextFrame(NewPlayer, false);
+			}
+			else
+			{
+				UE_LOG(LogLyra, Log, TEXT("LyraGameMode: Failed to restart player (%s)"), *GetPathNameSafe(NewPlayer));
 			}
 		}
+		else
+		{
+			RequestPlayerRestartNextFrame(NewPlayer, false);
+		}
+	}
+	else
+	{
+		UE_LOG(LogLyra, Log, TEXT("LyraGameMode: Failed to restart player (%s)"), *GetPathNameSafe(NewPlayer));
 	}
 }
 
@@ -190,6 +237,23 @@ const ULyraPawnData* ALyraGameMode::GetPawnData(const AController* Controller) c
 	}
 
 	return nullptr;
+}
+
+void ALyraGameMode::RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset)
+{
+	if (bForceReset && Controller)
+	{
+		Controller->Reset();
+	}
+
+	if (auto PlayerController = Cast<APlayerController>(Controller))
+	{
+		GetWorldTimerManager().SetTimerForNextTick(PlayerController, &APlayerController::ServerRestartPlayer_Implementation);
+	}
+	else if (auto BotController = Cast<ALyraPlayerBotController>(Controller))
+	{
+		GetWorldTimerManager().SetTimerForNextTick(BotController, &ALyraPlayerBotController::ServerRestartController);
+	}
 }
 
 void ALyraGameMode::SetGameplayExperience()

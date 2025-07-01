@@ -9,6 +9,10 @@
 /**
  * 
  */
+
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLyraPlayerInitialized, AGameModeBase*, AController*);
+
+
 UCLASS()
 class LYRAGAME_API ALyraGameMode : public AModularGameModeBase
 {
@@ -32,6 +36,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Lyra|Pawn")
 	const class ULyraPawnData* GetPawnData(const AController* Controller) const;
+
+	UFUNCTION(BlueprintCallable)
+	void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset = false);
+
+	FOnLyraPlayerInitialized OnLyraPlayerInitialized;
 protected:
 	void SetGameplayExperience();
 };
