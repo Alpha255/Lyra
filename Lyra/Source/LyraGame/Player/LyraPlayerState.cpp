@@ -5,8 +5,10 @@
 #include "GameModes/LyraGameState.h"
 #include "GameModes/LyraGameMode.h"
 #include "GameModes/LyraExperienceManagerComponent.h"
+#include "Character/LyraPawnData.h"
 #include "LyraLogChannel.h"
 #include "Net/UnrealNetwork.h"
+#include "Net/Core/PushModel/PushModel.h"
 
 ALyraPlayerState::ALyraPlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -55,6 +57,25 @@ void ALyraPlayerState::PostInitializeComponents()
 
 void ALyraPlayerState::SetPawnData(const ULyraPawnData* InPawnData)
 {
+	check(InPawnData);
+
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
+	if (PawnData)
+	{
+		UE_LOG(LogLyra, Error, TEXT("Trying to set PawnData [%s] on player state [%s] that already has valid PawnData [%s]."),
+			*GetNameSafe(InPawnData), *GetNameSafe(this), *GetNameSafe(PawnData));
+	}
+	else
+	{
+		MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, PawnData, this);
+		PawnData = InPawnData;
+
+		ForceNetUpdate();
+	}
 }
 
 void ALyraPlayerState::OnRep_PawnData()

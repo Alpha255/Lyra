@@ -9,9 +9,34 @@
 /**
  * 
  */
+
+enum class ELyraPlayerStartOccupancyState
+{
+	Empty,
+	Partial,
+	Full
+};
+
 UCLASS()
 class LYRAGAME_API ALyraPlayerStart : public APlayerStart
 {
 	GENERATED_BODY()
 	
+public:
+	ELyraPlayerStartOccupancyState GetOccupancyState(AController* Controller) const;
+
+	bool IsOccupied() const;
+
+	bool TryOccupy(AController* Controller);
+
+protected:
+	void CheckUnOccupied();
+
+	UPROPERTY(Transient)
+	TObjectPtr<AController> OccupiedBy = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category="Player Start Occupy")
+	float ExpirationCheckInterval = 1.0f;
+
+	FTimerHandle ExpirationCheckTimer;
 };

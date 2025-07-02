@@ -123,9 +123,9 @@ void ALyraGameMode::FinishRestartPlayer(AController* NewPlayer, const FRotator& 
 
 bool ALyraGameMode::PlayerCanRestart_Implementation(APlayerController* Player)
 {
-	if (auto PlayerController = Cast<APlayerController>(Player))
+	if (Player)
 	{
-		if (!Super::PlayerCanRestart_Implementation(PlayerController))
+		if (!Super::PlayerCanRestart_Implementation(Player))
 		{
 			return false;
 		}
@@ -154,6 +154,8 @@ void ALyraGameMode::InitGameState()
 	auto ExperienceMgrComp = GameState->FindComponentByClass<ULyraExperienceManagerComponent>();
 	check(ExperienceMgrComp);
 	ExperienceMgrComp->OnExperienceLoaded(FLyraOnExperienceLoaded::FDelegate::CreateLambda([this](const ULyraExperienceDefinition* Experience) {
+		UE_LOG(LogLyra, Log, TEXT("LyraGameMode: Experience asset loaded"));
+
 		for (auto It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 		{
 			auto PlayerController = Cast<APlayerController>(*It);
