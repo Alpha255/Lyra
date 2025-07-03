@@ -20,14 +20,18 @@ public:
 
 	virtual void CheckDefaultInitialization() override;
 
+	virtual FName GetFeatureName() const override { return NAME_Feature; }
+
 	UFUNCTION(Blueprintpure, Category="Lyra|Pawn")
 	static ULyraPawnComponent* GetPawnComponent(const AActor* Actor)
 	{
 		return Actor ? Actor->FindComponentByClass<ULyraPawnComponent>() : nullptr;
 	}
 
+	const class ULyraPawnData* GetPawnData() const { return PawnData; }
 	void SetPawnData(const class ULyraPawnData* InPawnData);
 
+	static const FName NAME_Feature;
 protected:
 	UFUNCTION()
 	void OnRep_PawnData();

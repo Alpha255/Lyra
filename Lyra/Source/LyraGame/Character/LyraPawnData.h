@@ -22,4 +22,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Lyra|Input")
 	TObjectPtr<class ULyraInputConfig> InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Lyra|Camera")
+	TSubclassOf<class ULyraCameraMode> DefaultCameraMode;
 };

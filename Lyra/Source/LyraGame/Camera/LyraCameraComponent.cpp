@@ -8,3 +8,12 @@ ULyraCameraComponent::ULyraCameraComponent(const FObjectInitializer& ObjectIniti
 	: Super(ObjectInitializer)
 {
 }
+
+void ULyraCameraComponent::OnRegister()
+{
+	Super::OnRegister();
+}
+
+void ULyraCameraComponent::GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView)
+{
+}

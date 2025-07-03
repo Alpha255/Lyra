@@ -7,6 +7,8 @@
 #include "LyraLogChannel.h"
 #include "Net/UnrealNetwork.h"
 
+const FName ULyraPawnComponent::NAME_Feature(TEXT("LyraPawnComp"));
+
 ULyraPawnComponent::ULyraPawnComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {

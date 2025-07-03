@@ -9,6 +9,10 @@
 /**
  * 
  */
+
+DECLARE_DELEGATE_RetVal(TSubclassOf<class ULyraCameraMode>, FLyraCameraModeDelegate);
+
+
 UCLASS()
 class LYRAGAME_API ULyraCameraComponent : public UCameraComponent
 {
@@ -16,4 +20,17 @@ class LYRAGAME_API ULyraCameraComponent : public UCameraComponent
 	
 public:
 	ULyraCameraComponent(const FObjectInitializer& ObjectInitializer);
+
+	UFUNCTION(BlueprintPure, Category="Lyra|Camera")
+	static ULyraCameraComponent* GetCameraComponent(const AActor* Actor)
+	{
+		return Actor ? Actor->FindComponentByClass<ULyraCameraComponent>() : nullptr;
+	}
+
+	virtual AActor* GetTargetActor() const { return GetOwner(); }
+
+	FLyraCameraModeDelegate DetermineCameModeDelegate;
+protected:
+	virtual void OnRegister() override;
+	virtual void GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView) override;
 };
