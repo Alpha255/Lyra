@@ -7,3 +7,9 @@ ALyraPlayerController::ALyraPlayerController(const FObjectInitializer& ObjectIni
 	: Super(ObjectInitializer)
 {
 }
+
+void ALyraPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	SetActorHiddenInGame(false);
+}

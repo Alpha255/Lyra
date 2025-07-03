@@ -69,6 +69,10 @@ APawn* ALyraGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* Ne
 			}
 
 			SpawnedPawn->FinishSpawning(SpawnTransform);
+			if (!IsValid(SpawnedPawn))
+			{
+				UE_LOG(LogLyra, Error, TEXT("LyraGameMode: The spawned character is invalid"));
+			}
 			return SpawnedPawn;
 		}
 		else
@@ -76,11 +80,8 @@ APawn* ALyraGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* Ne
 			UE_LOG(LogLyra, Error, TEXT("LyraGameMode: Unable to spawn pawn of class [%s] at [%s]"), *GetNameSafe(PawnClass), *SpawnTransform.ToHumanReadableString());
 		}
 	}
-	else
-	{
-		UE_LOG(LogLyra, Error, TEXT("LyraGameMode: Unable to spawn pawn due to null pawn class"));
-	}
 
+	UE_LOG(LogLyra, Error, TEXT("LyraGameMode: Unable to spawn pawn due to null pawn class"));
 	return nullptr;
 }
 
@@ -115,10 +116,10 @@ void ALyraGameMode::FinishRestartPlayer(AController* NewPlayer, const FRotator& 
 {
 	if (auto PlayerSpawnMgrComp = GameState->FindComponentByClass<ULyraPlayerSpawnManagerComponent>())
 	{
-		return PlayerSpawnMgrComp->FinishRestartPlayer(NewPlayer, StartRotation);
+		PlayerSpawnMgrComp->FinishRestartPlayer(NewPlayer, StartRotation);
 	}
 
-	return Super::FinishRestartPlayer(NewPlayer, StartRotation);
+	Super::FinishRestartPlayer(NewPlayer, StartRotation);
 }
 
 bool ALyraGameMode::PlayerCanRestart_Implementation(APlayerController* Player)

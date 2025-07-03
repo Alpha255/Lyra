@@ -16,4 +16,6 @@ class LYRAGAME_API ALyraPlayerController : public ACommonPlayerController
 	
 public:
 	ALyraPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	virtual void BeginPlay() override;
 };

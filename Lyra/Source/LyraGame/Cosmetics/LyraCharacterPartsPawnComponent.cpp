@@ -21,6 +21,7 @@ void ULyraCharacterPartsPawnComponent::GetLifetimeReplicatedProps(TArray<FLifeti
 void ULyraCharacterPartsPawnComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	PartList.RemoveAllEntries(false);
+	Super::EndPlay(EndPlayReason);
 }
 
 FLyraCharacterPartHandle ULyraCharacterPartsPawnComponent::AddPart(const FLyraCharacterPart& Part)
