@@ -20,10 +20,15 @@ public:
 	void Activate();
 	void Deactivate();
 
-	void PushCameraMode(TSubclassOf<class ULyraCameraMode> CameraMode);
+	void PushCameraMode(TSubclassOf<class ULyraCameraMode> CameraModeClass);
 
 	bool Evaluate(float DeltaTime, struct FLyraCameraModeView& OutCameraModeView);
 private:
+	class ULyraCameraMode* GetCameraModeInstance(TSubclassOf<class ULyraCameraMode> CameraModeClass);
+
+	void Update(float DeltaTime);
+	void Blend(struct FLyraCameraModeView& OutCameraModeView);
+
 	bool bIsActive = true;
 
 	UPROPERTY()

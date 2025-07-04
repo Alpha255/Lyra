@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
+#include "LyraCameraMode.h"
+
 #include "LyraCameraComponent.generated.h"
 
 /**

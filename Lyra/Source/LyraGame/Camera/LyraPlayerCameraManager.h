@@ -9,8 +9,14 @@
 /**
  * 
  */
-UCLASS()
-class LYRAGAME_API ALyraPlayerCameraManager : public APlayerCameraManager
+
+#define LYRA_CAMERA_DEFAULT_FOV (80.0f)
+#define LYRA_CAMERA_DEFAULT_PITCH_MIN (-90.0f)
+#define LYRA_CAMERA_DEFAULT_PITCH_MAX (90.0f)
+
+
+UCLASS(NotPlaceable, MinimalAPI)
+class ALyraPlayerCameraManager : public APlayerCameraManager
 {
 	GENERATED_BODY()
 	
