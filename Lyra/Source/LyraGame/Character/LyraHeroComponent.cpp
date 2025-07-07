@@ -28,6 +28,7 @@ bool ULyraHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Mana
 	{
 		if (Pawn)
 		{
+			UE_LOG(LogLyra, Log, TEXT("Gameplay state can change from [%s] to [%s]"), *CurrentState.ToString(), *DesiredState.ToString());
 			return true;
 		}
 	}
@@ -57,15 +58,18 @@ bool ULyraHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Mana
 			}
 		}
 
+		UE_LOG(LogLyra, Log, TEXT("Gameplay state can change from [%s] to [%s]"), *CurrentState.ToString(), *DesiredState.ToString());
 		return true;
 	}
 	else if (CurrentState == LyraGameplayTags::InitState_DataAvailable && DesiredState == LyraGameplayTags::InitState_DataInitialized)
 	{
+		UE_LOG(LogLyra, Log, TEXT("Gameplay state can change from [%s] to [%s]"), *CurrentState.ToString(), *DesiredState.ToString());
 		auto PlayerState = GetPlayerState<ALyraPlayerState>();
 		return PlayerState && Manager->HasFeatureReachedInitState(Pawn, ULyraPawnComponent::NAME_Feature, LyraGameplayTags::InitState_DataInitialized);
 	}
 	else if (CurrentState == LyraGameplayTags::InitState_DataInitialized && DesiredState == LyraGameplayTags::InitState_GameplayReady)
 	{
+		UE_LOG(LogLyra, Log, TEXT("Gameplay state can change from [%s] to [%s]"), *CurrentState.ToString(), *DesiredState.ToString());
 		return true;
 	}
 

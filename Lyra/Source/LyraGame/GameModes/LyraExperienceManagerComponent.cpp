@@ -146,7 +146,39 @@ void ULyraExperienceManagerComponent::OnExperienceLoaded()
 	UE_LOG(LogLyra, Log, TEXT("Load experience data completed: %s, %s"), *CurrentExperience->GetPrimaryAssetId().ToString(),
 		*GetClientServerContextString(this));
 
-	ApplyGameplayActions();
+	GameFeaturePluginURLs.Reset();
+	auto GetGameFeaturePluginURLs = [this](const UPrimaryDataAsset* Context, const TArray<FString>& Plugins)
+		{
+			for (const FString& PluginName : Plugins)
+			{
+				FString PluginURL;
+				if (UGameFeaturesSubsystem::Get().GetPluginURLByName(PluginName, PluginURL))
+				{
+					GameFeaturePluginURLs.AddUnique(PluginURL);
+				}
+			}
+		};
+	GetGameFeaturePluginURLs(CurrentExperience, CurrentExperience->GameFeaturesToEnable);
+
+	NumGameFeaturePluginsToLoad = GameFeaturePluginURLs.Num();
+	if (NumGameFeaturePluginsToLoad > 0)
+	{
+		ExperienceLoadState = ELyraExperienceLoadState::LoadingGameFeatures;
+		for (const auto& URL : GameFeaturePluginURLs)
+		{
+			UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(URL, FGameFeaturePluginLoadComplete::CreateLambda([this](const UE::GameFeatures::FResult& Result) 
+				{
+					if (--NumGameFeaturePluginsToLoad == 0)
+					{
+						ApplyGameplayActions();
+					}
+				}));
+		}
+	}
+	else
+	{
+		ApplyGameplayActions();
+	}
 }
 
 const ULyraExperienceDefinition* ULyraExperienceManagerComponent::GetCurrentExperience() const

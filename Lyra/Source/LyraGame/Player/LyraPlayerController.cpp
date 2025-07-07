@@ -13,3 +13,8 @@ void ALyraPlayerController::BeginPlay()
 	Super::BeginPlay();
 	SetActorHiddenInGame(false);
 }
+
+void ALyraPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+}

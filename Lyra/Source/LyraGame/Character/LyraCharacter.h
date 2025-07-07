@@ -14,6 +14,14 @@ class LYRAGAME_API ALyraCharacter : public AModularCharacter
 public:
 	ALyraCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+protected:
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
+
+	virtual void OnRep_Controller() override;
+	virtual void OnRep_PlayerState() override;
+
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lyra|Character", Meta = (AllowPrivateAccess="true"))
 	TObjectPtr<class ULyraPawnComponent> PawnComponent;

@@ -16,4 +16,6 @@ class LYRAGAME_API ULyraGameInstance : public UCommonGameInstance
 	
 public:
 	ULyraGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+protected:
+	virtual void Init() override;
 };

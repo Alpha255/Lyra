@@ -6,6 +6,7 @@
 #include "LyraGameplayTags.h"
 #include "LyraLogChannel.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/GameFrameworkComponentManager.h"
 
 const FName ULyraPawnComponent::NAME_Feature(TEXT("LyraPawnComp"));
 
@@ -18,6 +19,52 @@ ULyraPawnComponent::ULyraPawnComponent(const FObjectInitializer& ObjectInitializ
 	SetIsReplicatedByDefault(true);
 
 	PawnData = nullptr;
+}
+
+bool ULyraPawnComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
+{
+	check(Manager);
+
+	auto Pawn = GetPawn<APawn>();
+	if (!CurrentState.IsValid() && DesiredState == LyraGameplayTags::InitState_Spawned)
+	{
+		if (Pawn)
+		{
+			return true;
+		}
+	}
+	if (CurrentState == LyraGameplayTags::InitState_Spawned && DesiredState == LyraGameplayTags::InitState_DataAvailable)
+	{
+		if (!PawnData)
+		{
+			return false;
+		}
+
+		if ((Pawn->HasAuthority() || Pawn->IsLocallyControlled()) && !GetController<AController>())
+		{
+			return false;
+		}
+
+		return true;
+	}
+	else if (CurrentState == LyraGameplayTags::InitState_DataAvailable && DesiredState == LyraGameplayTags::InitState_DataInitialized)
+	{
+		return Manager->HasFeatureReachedInitState(Pawn, NAME_Feature, LyraGameplayTags::InitState_DataAvailable);
+	}
+	else if (CurrentState == LyraGameplayTags::InitState_DataInitialized && DesiredState == LyraGameplayTags::InitState_GameplayReady)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void ULyraPawnComponent::OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
+{
+	if (Params.FeatureName != NAME_Feature && Params.FeatureState == LyraGameplayTags::InitState_DataAvailable)
+	{
+		CheckDefaultInitialization();
+	}
 }
 
 void ULyraPawnComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -69,4 +116,43 @@ void ULyraPawnComponent::SetPawnData(const ULyraPawnData* InPawnData)
 
 		CheckDefaultInitialization();
 	}
+}
+
+void ULyraPawnComponent::OnControllerChanged()
+{
+	CheckDefaultInitialization();
+}
+
+void ULyraPawnComponent::OnPlayerStateReplicated()
+{
+	CheckDefaultInitialization();
+}
+
+void ULyraPawnComponent::OnSetupPlayerInputComponent()
+{
+	CheckDefaultInitialization();
+}
+
+void ULyraPawnComponent::OnRegister()
+{
+	Super::OnRegister();
+
+	RegisterInitStateFeature();
+}
+
+void ULyraPawnComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	BindOnActorInitStateChanged(NAME_None, FGameplayTag(), false);
+
+	ensure(TryToChangeInitState(LyraGameplayTags::InitState_Spawned));
+
+	CheckDefaultInitialization();
+}
+
+void ULyraPawnComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	UnregisterInitStateFeature();
+	Super::EndPlay(EndPlayReason);
 }

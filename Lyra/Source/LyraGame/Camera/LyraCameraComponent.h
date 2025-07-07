@@ -35,4 +35,11 @@ public:
 protected:
 	virtual void OnRegister() override;
 	virtual void GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView) override;
+
+	virtual void UpdateCameraModes();
+private:
+	UPROPERTY()
+	TObjectPtr<class ULyraCameraModeStack> CameraModeStack;
+
+	float FieldOfViewOffset;
 };

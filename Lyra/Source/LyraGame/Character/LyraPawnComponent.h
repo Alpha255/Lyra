@@ -18,6 +18,8 @@ class LYRAGAME_API ULyraPawnComponent : public UPawnComponent, public IGameFrame
 public:
 	ULyraPawnComponent(const FObjectInitializer& ObjectInitializer);
 
+	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const override;
+	virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) override;
 	virtual void CheckDefaultInitialization() override;
 
 	virtual FName GetFeatureName() const override { return NAME_Feature; }
@@ -31,8 +33,16 @@ public:
 	const class ULyraPawnData* GetPawnData() const { return PawnData; }
 	void SetPawnData(const class ULyraPawnData* InPawnData);
 
+	void OnControllerChanged();
+	void OnPlayerStateReplicated();
+	void OnSetupPlayerInputComponent();
+
 	static const FName NAME_Feature;
 protected:
+	virtual void OnRegister() override;
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	UFUNCTION()
 	void OnRep_PawnData();
 

@@ -28,3 +28,38 @@ ALyraCharacter::ALyraCharacter(const FObjectInitializer& ObjectInitializer)
 	PawnComponent = CreateDefaultSubobject<ULyraPawnComponent>(TEXT("PawnComponent"));
 	CameraComponent = CreateDefaultSubobject<ULyraCameraComponent>(TEXT("CameraComponent"));
 }
+
+void ALyraCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	PawnComponent->OnControllerChanged();
+}
+
+void ALyraCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	PawnComponent->OnControllerChanged();
+}
+
+void ALyraCharacter::OnRep_Controller()
+{
+	Super::OnRep_Controller();
+
+	PawnComponent->OnControllerChanged();
+}
+
+void ALyraCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	PawnComponent->OnPlayerStateReplicated();
+}
+
+void ALyraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PawnComponent->OnSetupPlayerInputComponent();
+}

@@ -60,4 +60,7 @@ private:
 	TObjectPtr<const class ULyraExperienceDefinition> CurrentExperience;
 
 	TArray<FLyraOnExperienceLoaded> OnExperienceLoadedDelegates;
+
+	int32 NumGameFeaturePluginsToLoad = 0;
+	TArray<FString> GameFeaturePluginURLs;
 };

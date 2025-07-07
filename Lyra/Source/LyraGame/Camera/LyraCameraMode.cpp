@@ -17,6 +17,25 @@ FLyraCameraModeView::FLyraCameraModeView()
 
 void FLyraCameraModeView::Blend(const FLyraCameraModeView& Other, float Weight)
 {
+	if (Weight <= 0.0f)
+	{
+		return;
+	}
+	else if (Weight >= 1.0f)
+	{
+		*this = Other;
+		return;
+	}
+
+	Location = FMath::Lerp(Location, Other.Location, Weight);
+
+	const FRotator DeltaRotation = (Other.Rotation - Rotation).GetNormalized();
+	Rotation = Rotation + (Weight * DeltaRotation);
+
+	const FRotator DeltaControlRotation = (Other.ControlRotation - ControlRotation).GetNormalized();
+	ControlRotation = ControlRotation + (Weight * DeltaControlRotation);
+
+	FieldOfView = FMath::Lerp(FieldOfView, Other.FieldOfView, Weight);
 }
 
 ULyraCameraMode::ULyraCameraMode()
@@ -54,6 +73,27 @@ void ULyraCameraMode::Update(float DeltaTime)
 
 void ULyraCameraMode::SetBlendWeight(float Weight)
 {
+	BlendWeight = FMath::Clamp(Weight, 0.0f, 1.0f);
+
+	const float InvExponent = (BlendExponent > 0.0f) ? (1.0f / BlendExponent) : 1.0f;
+
+	switch (BlendFunction)
+	{
+	case ELyraCameraModeBlendFunction::Linear:
+		BlendAlpha = BlendWeight;
+		break;
+	case ELyraCameraModeBlendFunction::EaseIn:
+		BlendAlpha = FMath::InterpEaseIn(0.0f, 1.0f, BlendWeight, InvExponent);
+		break;
+	case ELyraCameraModeBlendFunction::EaseOut:
+		BlendAlpha = FMath::InterpEaseOut(0.0f, 1.0f, BlendWeight, InvExponent);
+		break;
+	case ELyraCameraModeBlendFunction::EaseInOut:
+		BlendAlpha = FMath::InterpEaseInOut(0.0f, 1.0f, BlendWeight, InvExponent);
+		break;
+	default:
+		break;
+	}
 }
 
 void ULyraCameraMode::UpdateView(float DeltaTime)
