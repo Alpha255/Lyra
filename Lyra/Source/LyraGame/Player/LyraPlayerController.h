@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "CommonPlayerController.h"
+#include "Camera/LyraCameraAssistInterface.h"
 #include "LyraPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LYRAGAME_API ALyraPlayerController : public ACommonPlayerController
+class LYRAGAME_API ALyraPlayerController : public ACommonPlayerController, public ILyraCameraAssistInterface
 {
 	GENERATED_BODY()
 	
@@ -19,4 +20,9 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
+
+	virtual void OnCameraPenetratingTarget() override;
+
+protected:
+	bool bHideViewTargetPawnNextFrame = false;
 };

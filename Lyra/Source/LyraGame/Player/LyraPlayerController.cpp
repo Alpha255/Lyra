@@ -18,3 +18,8 @@ void ALyraPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 }
+
+void ALyraPlayerController::OnCameraPenetratingTarget()
+{
+	bHideViewTargetPawnNextFrame = true;
+}

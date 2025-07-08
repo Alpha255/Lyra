@@ -62,7 +62,6 @@ protected:
 
 	virtual FVector GetPivotLocation() const;
 	virtual FRotator GetPivotRotation() const;
-private:
 
 	UPROPERTY(EditDefaultsOnly, Category="View", Meta=(UIMin="5.0", UIMax="170.0", ClampMin="5.0", ClampMax="170.0"))
 	float FieldOfView;
