@@ -16,4 +16,61 @@ class LYRAGAME_API ULyraQuickBarComponent : public UControllerComponent
 	
 public:
 	ULyraQuickBarComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	UFUNCTION(BlueprintCallable, Category = "Lyra")
+	void CycleActiveSlotForward();
+
+	UFUNCTION(BlueprintCallable, Category = "Lyra")
+	void CycleActiveSlotBackward();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure = false)
+	TArray<ULyraInventoryItemInstance*> GetInventoryItemSlots() const { return InventoryItemSlots; }
+
+	UFUNCTION(BlueprintCallable, BlueprintPure = false)
+	int32 GetActiveSlotIndex() const { return ActiveSlotIndex; }
+
+	virtual void BeginPlay() override;
+protected:
+	UPROPERTY()
+	int32 NumSlots = 3;
+
+	UFUNCTION()
+	void OnRep_InventoryItemSlots();
+
+	UFUNCTION()
+	void OnRep_ActiveSlotIndex();
+private:
+	UPROPERTY(ReplicatedUsing = OnRep_InventoryItemSlots)
+	TArray<TObjectPtr<class ULyraInventoryItemInstance>> InventoryItemSlots;
+
+	UPROPERTY(ReplicatedUsing = OnRep_ActiveSlotIndex)
+	int32 ActiveSlotIndex = -1;
+
+	UPROPERTY()
+	TObjectPtr<class ULyraEquipmentInstance> EquippedItem;
+};
+
+
+USTRUCT(BlueprintType)
+struct FLyraQuickBarSlotsChangedMessage
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory")
+	TObjectPtr<AActor> Owner = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory")
+	TArray<TObjectPtr<class ULyraInventoryItemInstance>> InventoryItemSlots;
+};
+
+USTRUCT(BlueprintType)
+struct FLyraQuickBarActiveSlotChangedMessage
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory")
+	TObjectPtr<AActor> Owner = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory")
+	int32 ActiveSlotIndex = -1;
 };
