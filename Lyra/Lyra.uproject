@@ -14,7 +14,8 @@
 				"CoreUObject",
 				"ModularGameplayActors",
 				"CommonGame",
-				"EnhancedInput"
+				"EnhancedInput",
+				"PhysicsCore"
 			]
 		},
 		{
