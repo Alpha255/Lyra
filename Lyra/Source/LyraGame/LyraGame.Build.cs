@@ -40,7 +40,8 @@ public class LyraGame : ModuleRules
 			new string[] {
 				"InputCore",
                 "EnhancedInput",
-				"NetCore"
+				"NetCore",
+                "GameplayMessageRuntime"
             }
 		);
 	}

@@ -4,9 +4,10 @@
 #include "Equipment/LyraQuickBarComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "NativeGameplayTags.h"
-//#include "GameFramework/GameplayMessageSubsystem.h"
+#include "GameplayMessageSubsystem.h"
 
 UE_DEFINE_GAMEPLAY_TAG_STATIC(LyraGameplayTag_QuickBar_SlotsChanged_Message, "Lyra.QuickBar.Message.SlotsChanged");
+UE_DEFINE_GAMEPLAY_TAG_STATIC(LyraGameplayTag_QuickBar_ActiveIndexChanged_Message, "Lyra.QuickBar.Message.ActiveIndexChanged");
 
 ULyraQuickBarComponent::ULyraQuickBarComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -46,9 +47,14 @@ void ULyraQuickBarComponent::OnRep_InventoryItemSlots()
 	Message.Owner = GetOwner();
 	Message.InventoryItemSlots = InventoryItemSlots;
 
-	//UGameplayMessageSubsystem::Get(this).BroadcastMessage(LyraGameplayTag_QuickBar_SlotsChanged_Message, Message);
+	UGameplayMessageSubsystem::Get(this).BroadcastMessage(LyraGameplayTag_QuickBar_SlotsChanged_Message, Message);
 }
 
 void ULyraQuickBarComponent::OnRep_ActiveSlotIndex()
 {
+	FLyraQuickBarActiveSlotChangedMessage Message;
+	Message.Owner = GetOwner();
+	Message.ActiveSlotIndex = ActiveSlotIndex;
+
+	UGameplayMessageSubsystem::Get(this).BroadcastMessage(LyraGameplayTag_QuickBar_ActiveIndexChanged_Message, Message);
 }

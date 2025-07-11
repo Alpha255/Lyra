@@ -16,9 +16,10 @@ EDataValidationResult ULyraExperienceActionSet::IsDataValid(FDataValidationConte
 
     for (int32 Index = 0; Index < Actions.Num(); ++Index)
     {
-        if (Actions[Index])
+        const UGameFeatureAction* Action = Actions[Index];
+        if (Action)
         {
-            Result = CombineDataValidationResults(Result, Actions[Index]->IsDataValid(Context));
+            Result = CombineDataValidationResults(Result, Action->IsDataValid(Context));
         }
         else
         {
