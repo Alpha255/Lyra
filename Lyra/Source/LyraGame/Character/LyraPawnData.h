@@ -17,12 +17,15 @@ class LYRAGAME_API ULyraPawnData : public UPrimaryDataAsset
 public:
 	ULyraPawnData(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Lyra|Pawn")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Pawn")
 	TSubclassOf<APawn> PawnClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Lyra|Input")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Abilities")
+    TArray<TObjectPtr<class ULyraGameplayAbilitySet>> GameplayAbilitySets;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Input")
 	TObjectPtr<class ULyraInputConfig> InputConfig;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Lyra|Camera")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Camera")
 	TSubclassOf<class ULyraCameraMode> DefaultCameraMode;
 };

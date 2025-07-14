@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Lyra")
 	void CycleActiveSlotBackward();
 
+    UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Lyra")
+    void SetActiveSlotIndex(int32 Index);
+
 	UFUNCTION(BlueprintCallable, BlueprintPure = false)
 	TArray<ULyraInventoryItemInstance*> GetInventoryItemSlots() const { return InventoryItemSlots; }
 
@@ -40,6 +43,13 @@ protected:
 	UFUNCTION()
 	void OnRep_ActiveSlotIndex();
 private:
+    void EquipItemInActiveSlot();
+    void UnequipItemInActiveSlot();
+
+    void CycleActiveSlot(int32 Factor);
+
+    class ULyraEquipmentManagerComponent* TryGetEquipmentManagerComponent() const;
+
 	UPROPERTY(ReplicatedUsing = OnRep_InventoryItemSlots)
 	TArray<TObjectPtr<class ULyraInventoryItemInstance>> InventoryItemSlots;
 

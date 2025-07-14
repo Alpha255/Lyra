@@ -9,10 +9,18 @@
 #include "LyraLogChannel.h"
 #include "Net/UnrealNetwork.h"
 #include "Net/Core/PushModel/PushModel.h"
+#include "AbilitySystem/LyraAbilitySystemComponent.h"
+#include "AbilitySystem/LyraGameplayAbilitySet.h"
 
 ALyraPlayerState::ALyraPlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+    AbilitySysComp = ObjectInitializer.CreateDefaultSubobject<ULyraAbilitySystemComponent>(this, TEXT("AbilitySystemComponent"));
+    AbilitySysComp->SetIsReplicated(true);
+    AbilitySysComp->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+    // AbilitySystemComponent needs to be updated at a high frequency.
+    SetNetUpdateFrequency(100.0f);
 }
 
 void ALyraPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -73,6 +81,14 @@ void ALyraPlayerState::SetPawnData(const ULyraPawnData* InPawnData)
 	{
 		MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, PawnData, this);
 		PawnData = InPawnData;
+
+        for (const auto& AbilitySet : PawnData->GameplayAbilitySets)
+        {
+            if (AbilitySet)
+            {
+                AbilitySet->GiveAbility(AbilitySysComp, nullptr);
+            }
+        }
 
 		ForceNetUpdate();
 	}

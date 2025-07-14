@@ -30,4 +30,7 @@ protected:
 	TObjectPtr<const class ULyraPawnData> PawnData;
 
 private:
+
+    UPROPERTY(VisibleAnywhere, Category = "Lyra|PlayerState")
+    TObjectPtr<class ULyraAbilitySystemComponent> AbilitySysComp;
 };

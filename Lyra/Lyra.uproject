@@ -15,7 +15,8 @@
 				"ModularGameplayActors",
 				"CommonGame",
 				"EnhancedInput",
-				"PhysicsCore"
+				"PhysicsCore",
+				"GameplayAbilities"
 			]
 		},
 		{
