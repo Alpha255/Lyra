@@ -13,5 +13,10 @@ UCLASS(Blueprintable, Const, Abstract)
 class LYRAGAME_API ULyraEquipment : public UObject
 {
 	GENERATED_BODY()
-	
+
+public:
+    ULyraEquipment(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+    UPROPERTY(EditDefaultsOnly, Category = "Equipment")
+    TSubclassOf<class ULyraEquipmentInstance> InstanceClass;
 };

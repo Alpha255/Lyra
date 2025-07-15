@@ -15,3 +15,13 @@ void ULyraEquipmentInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 	DOREPLIFETIME(ThisClass, SpawnedActors);
 }
+
+void ULyraEquipmentInstance::OnEquipped()
+{
+    K2_OnEquipped();
+}
+
+void ULyraEquipmentInstance::OnUnequipped()
+{
+    K2_OnUnequipped();
+}

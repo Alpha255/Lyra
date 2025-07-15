@@ -7,6 +7,7 @@
 #include "GameplayMessageSubsystem.h"
 #include "Equipment/LyraEquipmentManagerComponent.h"
 #include "Equipment/LyraEquipment.h"
+#include "Equipment/LyraEquipmentInstance.h"
 #include "Inventory/LyraInventoryItemInstance.h"
 #include "Inventory/LyraInventoryFragment_EquippableItem.h"
 
@@ -91,7 +92,7 @@ void ULyraQuickBarComponent::EquipItemInActiveSlot()
                 {
                     if (EquippedItem = EquipmentMgrComp->EquipItem(EquipmentClass))
                     {
-
+                        EquippedItem->SetInstigator(SlotItem);
                     }
                 }
             }

@@ -54,6 +54,6 @@ class LYRAGAME_API ULyraGameplayAbilitySet : public UPrimaryDataAsset
 public:
     void GiveAbility(class ULyraAbilitySystemComponent* AbilitySysComp, FLyraGrantedGameplayAbilityHandles* OutGrantedAbilityHandles, UObject* Source = nullptr) const;
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilities", Meta = (TitleProperty = Ability))
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilities", Meta = (TitleProperty = AbilityClass))
 	TArray<FLyraGameplayAbilityConfig> GrantedAbilities;
 };

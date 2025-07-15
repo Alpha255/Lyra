@@ -14,4 +14,8 @@ class LYRAGAME_API ULyraGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
+
+public:
+    UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
+    AController* GetController() const;
 };

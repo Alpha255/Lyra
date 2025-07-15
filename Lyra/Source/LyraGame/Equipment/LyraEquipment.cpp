@@ -2,4 +2,10 @@
 
 
 #include "Equipment/LyraEquipment.h"
+#include "Equipment/LyraEquipmentInstance.h"
 
+ULyraEquipment::ULyraEquipment(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    InstanceClass = ULyraEquipmentInstance::StaticClass();
+}
