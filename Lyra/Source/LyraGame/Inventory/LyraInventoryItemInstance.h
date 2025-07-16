@@ -25,6 +25,8 @@ public:
 
     TSubclassOf<class ULyraInventoryItem> GetInventoryItem() const { return InventoryItem; }
 private:
+    friend struct FLyraInventoryList;
+
     void SetInventoryItem(TSubclassOf<class ULyraInventoryItem> InInventoryItem);
 
     UPROPERTY(Replicated)

@@ -2,6 +2,7 @@
 
 
 #include "GameModes/LyraExperienceManagerComponent.h"
+#include "GameModes/LyraExperienceActionSet.h"
 #include "System/LyraAssetManager.h"
 #include "LyraGame/LyraLogChannel.h"
 #include "LyraExperienceDefinition.h"
@@ -68,6 +69,13 @@ void ULyraExperienceManagerComponent::StartLoadExperience()
 
 	TSet<FPrimaryAssetId> BundleAssetList;
 	BundleAssetList.Add(CurrentExperience->GetPrimaryAssetId());
+    for (auto& ActionSet : CurrentExperience->ExperienceActionSets)
+    {
+        if (ActionSet)
+        {
+            BundleAssetList.Add(ActionSet->GetPrimaryAssetId());
+        }
+    }
 
 	TArray<FName> BundlesToLoad;
 	BundlesToLoad.Add(TEXT("Equipped"));
@@ -129,6 +137,13 @@ void ULyraExperienceManagerComponent::ApplyGameplayActions()
 		};
 
 	ActivateActionList(CurrentExperience->GameFeatureActions);
+    for (auto& ActionSet : CurrentExperience->ExperienceActionSets)
+    {
+        if (ActionSet)
+        {
+            ActivateActionList(ActionSet->Actions);
+        }
+    }
 
 	ExperienceLoadState = ELyraExperienceLoadState::Loaded;
 
@@ -159,6 +174,13 @@ void ULyraExperienceManagerComponent::OnExperienceLoaded()
 			}
 		};
 	GetGameFeaturePluginURLs(CurrentExperience, CurrentExperience->GameFeaturesToEnable);
+    for (auto& ActionSet : CurrentExperience->ExperienceActionSets)
+    {
+        if (ActionSet)
+        {
+            GetGameFeaturePluginURLs(ActionSet, ActionSet->GameFeaturesToEnable);
+        }
+    }
 
 	NumGameFeaturePluginsToLoad = GameFeaturePluginURLs.Num();
 	if (NumGameFeaturePluginsToLoad > 0)
@@ -185,4 +207,45 @@ const ULyraExperienceDefinition* ULyraExperienceManagerComponent::GetCurrentExpe
 {
 	check(ExperienceLoadState == ELyraExperienceLoadState::Loaded && CurrentExperience != nullptr);
 	return CurrentExperience;
+}
+
+void ULyraExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    Super::EndPlay(EndPlayReason);
+
+    for (auto& PluginURL : GameFeaturePluginURLs)
+    {
+        UGameFeaturesSubsystem::Get().DeactivateGameFeaturePlugin(PluginURL);
+    }
+
+    if (ExperienceLoadState == ELyraExperienceLoadState::Loaded)
+    {
+        ExperienceLoadState = ELyraExperienceLoadState::Deactivating;
+
+        FGameFeatureDeactivatingContext Context(TEXT(""), [this](FStringView) {});
+        if (auto WorldContext = GEngine->GetWorldContextFromWorld(GetWorld()))
+        {
+            Context.SetRequiredWorldContextHandle(WorldContext->ContextHandle);
+        }
+
+        auto DeactiveActions = [&Context](const TArray<UGameFeatureAction*>& Actions)
+            {
+                for (auto Action : Actions)
+                {
+                    if (Action)
+                    {
+                        Action->OnGameFeatureDeactivating(Context);
+                        Action->OnGameFeatureUnregistering();
+                    }
+                }
+            };
+        DeactiveActions(CurrentExperience->GameFeatureActions);
+        for (auto& ActionSet : CurrentExperience->ExperienceActionSets)
+        {
+            if (ActionSet)
+            {
+                DeactiveActions(ActionSet->Actions);
+            }
+        }
+    }
 }

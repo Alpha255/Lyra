@@ -16,6 +16,20 @@ void ULyraEquipmentInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME(ThisClass, SpawnedActors);
 }
 
+APawn* ULyraEquipmentInstance::GetTypedPawn(TSubclassOf<APawn> PawnClass) const
+{
+    APawn* Pawn = nullptr;
+    if (auto ActualPawnClass = PawnClass.Get())
+    {
+        if (GetOuter()->IsA(ActualPawnClass))
+        {
+            Pawn = Cast<APawn>(GetOuter());
+        }
+    }
+
+    return Pawn;
+}
+
 void ULyraEquipmentInstance::OnEquipped()
 {
     K2_OnEquipped();

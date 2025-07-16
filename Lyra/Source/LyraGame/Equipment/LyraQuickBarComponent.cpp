@@ -104,6 +104,15 @@ void ULyraQuickBarComponent::UnequipItemInActiveSlot()
 {
 }
 
+void ULyraQuickBarComponent::AddInventoryItemToSlot(int32 Index, ULyraInventoryItemInstance* ItemInstance)
+{
+    if (InventoryItemSlots.IsValidIndex(Index) && ItemInstance && InventoryItemSlots[Index] != ItemInstance)
+    {
+        InventoryItemSlots[Index] = ItemInstance;
+        OnRep_InventoryItemSlots();
+    }
+}
+
 void ULyraQuickBarComponent::CycleActiveSlot(int32 Factor)
 {
     if (InventoryItemSlots.Num() < 2)

@@ -29,6 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure = false)
 	TArray<ULyraInventoryItemInstance*> GetInventoryItemSlots() const { return InventoryItemSlots; }
 
+    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+    void AddInventoryItemToSlot(int32 Index, ULyraInventoryItemInstance* ItemInstance);
+
 	UFUNCTION(BlueprintCallable, BlueprintPure = false)
 	int32 GetActiveSlotIndex() const { return ActiveSlotIndex; }
 

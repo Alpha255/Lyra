@@ -23,6 +23,9 @@ public:
     UFUNCTION(BlueprintPure, Category = "Equipment")
     UObject* GetInstigator() const { return Instigator; }
 
+    UFUNCTION(BlueprintPure, Category = "Equipment", Meta = (DeterminesOutputType = PawnClass))
+    APawn* GetTypedPawn(TSubclassOf<APawn> PawnClass) const;
+
     void SetInstigator(UObject* InInstigator) { Instigator = InInstigator; }
 
     virtual void OnEquipped();

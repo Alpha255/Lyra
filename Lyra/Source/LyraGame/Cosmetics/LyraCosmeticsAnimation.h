@@ -8,6 +8,32 @@
 #include "LyraCosmeticsAnimation.generated.h"
 
 USTRUCT(BlueprintType)
+struct FLyraAnimLayerSelectionEntry
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSubclassOf<class UAnimInstance> Layer;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (Categories = "Cosmetic"))
+    FGameplayTagContainer RequiredTags;
+};
+
+USTRUCT(BlueprintType)
+struct FLyraAnimLayerSelectionSet
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (TitleProperty = Layer))
+    TArray<FLyraAnimLayerSelectionEntry> LayerRules;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSubclassOf<class UAnimInstance> DefaultLayer;
+
+    TSubclassOf<class UAnimInstance> SelectBestLayer(const FGameplayTagContainer& Tags) const;
+};
+
+USTRUCT(BlueprintType)
 struct FLyraAnimBodyStyleSelectionEntry
 {
 	GENERATED_BODY()

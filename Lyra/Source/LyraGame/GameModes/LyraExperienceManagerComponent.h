@@ -39,6 +39,8 @@ class LYRAGAME_API ULyraExperienceManagerComponent : public UGameStateComponent
 public:
 	ULyraExperienceManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	void SetExperience(FPrimaryAssetId AssetId);
 
 	void OnExperienceLoaded(FLyraOnExperienceLoaded::FDelegate&& Delegate, ELyraExperienceLoadPriority Priority);

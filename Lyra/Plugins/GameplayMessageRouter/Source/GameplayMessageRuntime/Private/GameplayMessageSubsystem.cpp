@@ -17,7 +17,7 @@ UGameplayMessageSubsystem& UGameplayMessageSubsystem::Get(const UObject* WorldCo
 
 void UGameplayMessageSubsystem::BroadcastMessageInternal(FGameplayTag Channel, const UScriptStruct* MessageType, const void* MessageData)
 {
-	for (FGameplayTag Tag = Channel; Tag.IsValid(); Tag.RequestDirectParent())
+	for (FGameplayTag Tag = Channel; Tag.IsValid(); Tag = Tag.RequestDirectParent())
 	{
 
 	}
