@@ -74,7 +74,7 @@ struct TStructOpsTypeTraits<FLyraEquipmentList> : public TStructOpsTypeTraitsBas
     };
 };
 
-UCLASS()
+UCLASS(BlueprintType, Const)
 class LYRAGAME_API ULyraEquipmentManagerComponent : public UPawnComponent
 {
 	GENERATED_BODY()
