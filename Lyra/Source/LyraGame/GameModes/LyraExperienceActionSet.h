@@ -15,6 +15,7 @@ class LYRAGAME_API ULyraExperienceActionSet : public UPrimaryDataAsset
 	GENERATED_BODY()
 	
 public:
+    ULyraExperienceActionSet() {}
 
 #if WITH_EDITOR
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;

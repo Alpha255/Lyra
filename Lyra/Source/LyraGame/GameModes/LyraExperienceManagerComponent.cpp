@@ -97,7 +97,7 @@ void ULyraExperienceManagerComponent::StartLoadExperience()
 
 	FStreamableDelegate AssetListLoadedDelegate = FStreamableDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded);
 
-	if (BundleLoadHandle && BundleLoadHandle->HasLoadCompleted())
+	if (!BundleLoadHandle.IsValid() || BundleLoadHandle->HasLoadCompleted())
 	{
 		FStreamableHandle::ExecuteDelegate(AssetListLoadedDelegate);
 	}
