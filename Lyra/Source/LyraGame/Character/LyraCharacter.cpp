@@ -25,8 +25,27 @@ ALyraCharacter::ALyraCharacter(const FObjectInitializer& ObjectInitializer)
 	SkeletalMeshComp->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	SkeletalMeshComp->SetCollisionProfileName(TEXT("LyraPawnMesh"));
 
+    auto LyraMoveComp = CastChecked<ULyraCharacterMovementComponent>(GetCharacterMovement());
+    LyraMoveComp->GravityScale = 1.0f;
+    LyraMoveComp->MaxAcceleration = 2400.0f;
+    LyraMoveComp->BrakingFrictionFactor = 1.0f;
+    LyraMoveComp->BrakingFriction = 6.0f;
+    LyraMoveComp->GroundFriction = 8.0f;
+    LyraMoveComp->BrakingDecelerationWalking = 1400.0f;
+    LyraMoveComp->bUseControllerDesiredRotation = false;
+    LyraMoveComp->bOrientRotationToMovement = false;
+    LyraMoveComp->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+    LyraMoveComp->bAllowPhysicsRotationDuringAnimRootMotion = false;
+    LyraMoveComp->GetNavAgentPropertiesRef().bCanCrouch = true;
+    LyraMoveComp->bCanWalkOffLedgesWhenCrouching = true;
+    LyraMoveComp->SetCrouchedHalfHeight(65.0f);
+
 	PawnComponent = CreateDefaultSubobject<ULyraPawnComponent>(TEXT("PawnComponent"));
 	CameraComponent = CreateDefaultSubobject<ULyraCameraComponent>(TEXT("CameraComponent"));
+    CameraComponent->SetRelativeLocation(FVector(-300.0f, 0.0f, 75.0f));
+
+    BaseEyeHeight = 80.0f;
+    CrouchedEyeHeight = 50.0f;
 }
 
 void ALyraCharacter::PossessedBy(AController* NewController)
