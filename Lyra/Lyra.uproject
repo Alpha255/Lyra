@@ -16,7 +16,8 @@
 				"CommonGame",
 				"EnhancedInput",
 				"PhysicsCore",
-				"GameplayAbilities"
+				"GameplayAbilities",
+				"GameFeatures"
 			]
 		},
 		{

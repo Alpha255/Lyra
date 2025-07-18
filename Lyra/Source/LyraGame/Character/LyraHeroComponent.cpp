@@ -8,8 +8,14 @@
 #include "Character/LyraPawnData.h"
 #include "Player/LyraPlayerState.h"
 #include "Player/LyraPlayerController.h"
+#include "Player/LyraLocalPlayer.h"
 #include "Camera/LyraCameraComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
+#include "InputMappingContext.h"
+#include "PlayerMappableInputConfig.h"
+#include "Input/LyraInputConfig.h"
+#include "EnhancedInputSubsystems.h"
+#include "UserSettings/EnhancedInputUserSettings.h"
 
 const FName ULyraHeroComponent::NAME_Feature(TEXT("LyraHeroComp"));
 
@@ -184,4 +190,31 @@ void ULyraHeroComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ULyraHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputComponent)
 {
+    check(PlayerInputComponent);
+
+    const auto Pawn = GetPawn<APawn>();
+    if (!Pawn)
+    {
+        return;
+    }
+
+    const auto PlayerController = GetController<ALyraPlayerController>();
+    check(PlayerController);
+
+    const auto LocalPlayer = Cast<ULyraLocalPlayer>(PlayerController->GetLocalPlayer());
+    check(LocalPlayer);
+
+    auto EnhancedInputSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+    check(EnhancedInputSubsystem);
+
+    EnhancedInputSubsystem->ClearAllMappings();
+    if (const auto PawnComp = ULyraPawnComponent::GetPawnComponent(Pawn))
+    {
+        if (const auto PawnData = PawnComp->GetPawnData())
+        {
+            if (auto InputConfig = PawnData->InputConfig)
+            {
+            }
+        }
+    }
 }

@@ -41,7 +41,8 @@ public class LyraGame : ModuleRules
 				"InputCore",
                 "EnhancedInput",
 				"NetCore",
-                "GameplayMessageRuntime"
+                "GameplayMessageRuntime",
+                "CommonInput",
             }
 		);
 	}
