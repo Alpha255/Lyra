@@ -36,6 +36,8 @@ class LYRAGAME_API ULyraInputConfig : public UDataAsset
 public:
 	ULyraInputConfig(const FObjectInitializer& ObjectInitializer);
 
+    const class UInputAction* FindNativeInputActionForTag(const FGameplayTag& GameplayTag, bool bLogIfNotFound) const;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta=(TitleProperty="InputAction"))
 	TArray<FLyraInputAction> NativeInputActions;
 

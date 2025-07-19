@@ -14,6 +14,7 @@
 #include "InputMappingContext.h"
 #include "PlayerMappableInputConfig.h"
 #include "Input/LyraInputConfig.h"
+#include "Input/LyraInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 
@@ -214,6 +215,29 @@ void ULyraHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCompo
         {
             if (auto InputConfig = PawnData->InputConfig)
             {
+                for (auto& InputMappingContext : DefaultInputMappingContexts)
+                {
+                    if (auto InputMapping = InputMappingContext.InputMapping.Get())
+                    {
+                        if (InputMappingContext.bRegisterWithSettings)
+                        {
+                            if (auto InputUserSettings = EnhancedInputSubsystem->GetUserSettings())
+                            {
+                                InputUserSettings->RegisterInputMappingContext(InputMapping);
+                            }
+
+                            FModifyContextOptions Options{};
+                            Options.bIgnoreAllPressedKeysUntilRelease = false;
+                            EnhancedInputSubsystem->AddMappingContext(InputMapping, InputMappingContext.Priority, Options);
+                        }
+                    }
+                }
+            }
+
+            auto LyraInputComp = Cast<ULyraInputComponent>(PlayerInputComponent);
+            if (ensure(LyraInputComp))
+            {
+
             }
         }
     }

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/PawnComponent.h"
 #include "Components/GameFrameworkInitStateInterface.h"
-//#include "GameFeatures/GameFeatureAction_AddInputContextMapping.h"
+#include "GameFeatures/GFA_AddInputContextMapping.h"
 #include "LyraHeroComponent.generated.h"
 
 /**
@@ -33,5 +33,5 @@ protected:
 
 	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
 
-    //TArray<FInputMappingContextAndPriority> DefaultInputMappings;
+    TArray<FLyraInputMappingContext> DefaultInputMappingContexts;
 };
