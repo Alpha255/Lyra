@@ -25,9 +25,48 @@ struct FLyraInputMappingContext
     bool bRegisterWithSettings = true;
 };
 
-UCLASS(MinimalAPI)
+UCLASS(MinimalAPI, Meta = (DisplayName = "Add Input Mapping"))
 class UGFA_AddInputContextMapping : public UGameFeatureAction_Base
 {
 	GENERATED_BODY()
 	
+public:
+#if WITH_EDITOR
+    virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
+#endif
+
+    virtual void OnGameFeatureRegistering() override;
+    virtual void OnGameFeatureUnregistering() override;
+    virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
+    virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TArray<FLyraInputMappingContext> InputMappings;
+
+private:
+    struct FPerContextData
+    {
+        TArray<TSharedPtr<struct FComponentRequestHandle>> ExtRequestHandles;
+        TArray<TWeakObjectPtr<APlayerController>> ControllersAddedTo;
+    };
+
+    void RegisterInputMappingContexts();
+    void UnregisterInputMappingContexts();
+
+    void RegisterInputMappingContexts(UGameInstance* GameInstance);
+    void UnregisterInputMappingContexts(UGameInstance* GameInstance);
+
+    void RegisterInputMappingContexts(ULocalPlayer* LocalPlayer);
+    void UnregisterInputMappingContexts(ULocalPlayer* LocalPlayer);
+
+    void Reset(FPerContextData& ActiveData);
+
+    void AddInputMapping(UPlayer* Player, FPerContextData& ActiveData);
+    void RemoveInputMapping(APlayerController* PlayerController, FPerContextData& ActiveData);
+
+    void HandleControllerExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext);
+
+    TMap<FGameFeatureStateChangeContext, FPerContextData> ContextData;
+
+    FDelegateHandle RegisterIM_Deletage;
 };
