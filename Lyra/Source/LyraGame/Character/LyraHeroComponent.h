@@ -33,5 +33,15 @@ protected:
 
 	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
 
+    void Input_AbilityTagPressed(FGameplayTag Tag);
+    void Input_AbilityTagReleased(FGameplayTag Tag);
+
+    void Input_Move(const struct FInputActionValue& ActionValue);
+    void Input_LookMouse(const struct FInputActionValue& ActionValue);
+    void Input_LookStick(const struct FInputActionValue& ActionValue);
+    void Input_Crouch(const struct FInputActionValue& ActionValue);
+    void Input_AutoRun(const struct FInputActionValue& ActionValue);
+
+    UPROPERTY(EditAnywhere)
     TArray<FLyraInputMappingContext> DefaultInputMappingContexts;
 };

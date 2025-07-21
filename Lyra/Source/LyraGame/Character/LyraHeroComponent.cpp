@@ -15,6 +15,7 @@
 #include "PlayerMappableInputConfig.h"
 #include "Input/LyraInputConfig.h"
 #include "Input/LyraInputComponent.h"
+#include "Character/LyraCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 
@@ -232,13 +233,112 @@ void ULyraHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCompo
                         }
                     }
                 }
-            }
 
-            auto LyraInputComp = Cast<ULyraInputComponent>(PlayerInputComponent);
-            if (ensure(LyraInputComp))
-            {
+                auto LyraInputComp = Cast<ULyraInputComponent>(PlayerInputComponent);
+                if (ensure(LyraInputComp))
+                {
+                    TArray<uint32> BindHandles;
 
+                    LyraInputComp->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityTagPressed, &ThisClass::Input_AbilityTagReleased, BindHandles);
+
+                    LyraInputComp->BindNativeAction(InputConfig, LyraGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, false);
+                    LyraInputComp->BindNativeAction(InputConfig, LyraGameplayTags::InputTag_LookMouse, ETriggerEvent::Triggered, this, &ThisClass::Input_LookMouse, false);
+                    LyraInputComp->BindNativeAction(InputConfig, LyraGameplayTags::InputTag_LookStick, ETriggerEvent::Triggered, this, &ThisClass::Input_LookStick, false);
+                    LyraInputComp->BindNativeAction(InputConfig, LyraGameplayTags::InputTag_Crouch, ETriggerEvent::Triggered, this, &ThisClass::Input_Crouch, false);
+                    LyraInputComp->BindNativeAction(InputConfig, LyraGameplayTags::InputTag_AutoRun, ETriggerEvent::Triggered, this, &ThisClass::Input_AutoRun, false);
+                }
             }
+        }
+    }
+}
+
+void ULyraHeroComponent::Input_AbilityTagPressed(FGameplayTag Tag)
+{
+}
+
+void ULyraHeroComponent::Input_AbilityTagReleased(FGameplayTag Tag)
+{
+}
+
+void ULyraHeroComponent::Input_Move(const FInputActionValue& ActionValue)
+{
+    auto Pawn = GetPawn<APawn>();
+    auto Controller = Pawn ? GetController<ALyraPlayerController>() : nullptr;
+
+    if (Controller)
+    {
+        const FVector2D MoveValue = ActionValue.Get<FVector2D>();
+        const FRotator Rotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
+
+        if (MoveValue.X != 0.0f)
+        {
+            Pawn->AddMovementInput(Rotation.RotateVector(FVector::RightVector), MoveValue.X);
+        }
+
+        if (MoveValue.Y != 0.0f)
+        {
+            Pawn->AddMovementInput(Rotation.RotateVector(FVector::ForwardVector), MoveValue.Y);
+        }
+    }
+}
+
+void ULyraHeroComponent::Input_LookMouse(const FInputActionValue& ActionValue)
+{
+    if (auto Pawn = GetPawn<APawn>())
+    {
+        const FVector2D LookValue = ActionValue.Get<FVector2D>();
+
+        if (LookValue.X != 0.0f)
+        {
+            Pawn->AddControllerYawInput(LookValue.X);
+        }
+
+        if (LookValue.Y != 0.0f)
+        {
+            Pawn->AddControllerPitchInput(LookValue.Y);
+        }
+    }
+}
+
+void ULyraHeroComponent::Input_LookStick(const FInputActionValue& ActionValue)
+{
+    static const float LookYawRate = 300.0f;
+    static const float LookPitchRate = 165.0f;
+
+    if (auto Pawn = GetPawn<APawn>())
+    {
+        const FVector2D LookValue = ActionValue.Get<FVector2D>();
+
+        auto World = GetWorld();
+        check(World);
+
+        if (LookValue.X != 0.0f)
+        {
+            Pawn->AddControllerYawInput(LookValue.X * LookYawRate * World->GetDeltaSeconds());
+        }
+
+        if (LookValue.Y != 0.0f)
+        {
+            Pawn->AddControllerPitchInput(LookValue.Y * LookPitchRate * World->GetDeltaSeconds());
+        }
+    }
+}
+
+void ULyraHeroComponent::Input_Crouch(const FInputActionValue& ActionValue)
+{
+    if (auto Character = GetPawn<ALyraCharacter>())
+    {
+
+    }
+}
+
+void ULyraHeroComponent::Input_AutoRun(const FInputActionValue& ActionValue)
+{
+    if (auto Pawn = GetPawn<APawn>())
+    {
+        if (auto Controller = GetController<ALyraPlayerController>())
+        {
+
         }
     }
 }

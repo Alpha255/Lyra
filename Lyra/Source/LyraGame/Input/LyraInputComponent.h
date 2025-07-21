@@ -28,21 +28,21 @@ public:
     }
 
     template<class TObject, class TPressedFunc, class TReleasedFunc>
-    void BindAbilityAction(const ULyraInputConfig* InputConfig, TObject* Object, TPressedFunc PressedFunc, TReleasedFunc ReleasedFunc, TArray<uint32>& BindHandles)
+    void BindAbilityActions(const ULyraInputConfig* InputConfig, TObject* Object, TPressedFunc PressedFunc, TReleasedFunc ReleasedFunc, TArray<uint32>& BindHandles)
     {
         check(InputConfig);
 
-        for (auto& const InputAction : InputConfig->AbilityInputActions)
+        for (auto& Action : InputConfig->AbilityInputActions)
         {
-            if (InputAction.InputAction && InputAction.InputTag.IsValid())
+            if (Action.InputAction && Action.InputTag.IsValid())
             {
                 if (PressedFunc)
                 {
-                    BindHandles.Add(BindAction(InputAction.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, InputAction.InputTag).GetHandle());
+                    BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle());
                 }
                 if (ReleasedFunc)
                 {
-                    BindHandles.Add(BindAction(InputAction.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, InputAction.InputTag).GetHandle());
+                    BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Action.InputTag).GetHandle());
                 }
             }
         }

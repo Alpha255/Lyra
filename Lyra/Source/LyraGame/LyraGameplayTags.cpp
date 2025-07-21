@@ -6,8 +6,8 @@
 namespace LyraGameplayTags
 {
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Move, "InputTag.Move", "Move");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Look_Mouse, "InputTag.Look.Mouse", "Look (mouse)");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Look_Stick, "InputTag.Look.Stick", "Look (stick)");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_LookMouse, "InputTag.Look.Mouse", "Look (mouse)");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_LookStick, "InputTag.Look.Stick", "Look (stick)");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Crouch, "InputTag.Crouch", "Crouch");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_AutoRun, "InputTag.AutoRun", "Auto Run");
 
