@@ -25,7 +25,10 @@ public:
 	virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) override;
 	virtual void CheckDefaultInitialization() override;
 
+    bool IsReadyToBindInputs() const { return bReadyToBindInputs; }
+
 	static const FName NAME_Feature;
+    static const FName NAME_ReadyToBindInputs;
 protected:
 	virtual void OnRegister() override;
 	virtual void BeginPlay() override;
@@ -44,4 +47,6 @@ protected:
 
     UPROPERTY(EditAnywhere)
     TArray<FLyraInputMappingContext> DefaultInputMappingContexts;
+
+    bool bReadyToBindInputs = false;
 };

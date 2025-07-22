@@ -40,6 +40,8 @@ public:
     virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
     virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 
+    virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) override;
+
     UPROPERTY(EditAnywhere, Category = "Input")
     TArray<FLyraInputMappingContext> InputMappings;
 

@@ -20,6 +20,7 @@
 #include "UserSettings/EnhancedInputUserSettings.h"
 
 const FName ULyraHeroComponent::NAME_Feature(TEXT("LyraHeroComp"));
+const FName ULyraHeroComponent::NAME_ReadyToBindInputs(TEXT("LyraHeroCompReadeToBindInputs"));
 
 ULyraHeroComponent::ULyraHeroComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -250,6 +251,11 @@ void ULyraHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCompo
             }
         }
     }
+
+    bReadyToBindInputs = true;
+
+    UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(PlayerController, NAME_ReadyToBindInputs);
+    UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(Pawn, NAME_ReadyToBindInputs);
 }
 
 void ULyraHeroComponent::Input_AbilityTagPressed(FGameplayTag Tag)
