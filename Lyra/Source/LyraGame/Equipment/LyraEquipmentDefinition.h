@@ -30,7 +30,7 @@ public:
     TSubclassOf<class ULyraEquipmentInstance> EquipmentInstance;
 
     UPROPERTY(EditDefaultsOnly, Category = "Equipment")
-    TArray<TObjectPtr<const class ULyraGameplayAbilitySet>> AbilitySets;
+    TArray<TObjectPtr<const class ULyraAbilitySet>> AbilitySets;
 
     UPROPERTY(EditDefaultsOnly, Category = "Equipment")
     TArray<FLyraEquipmentToSpawn> EquipmentsToSpawn;
