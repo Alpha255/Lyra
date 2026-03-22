@@ -3,8 +3,11 @@
 
 #include "Equipment/LyraEquipmentManagerComponent.h"
 #include "Equipment/LyraEquipmentInstance.h"
-#include "Equipment/LyraEquipment.h"
+#include "Equipment/LyraEquipmentDefinition.h"
 #include "Net/UnrealNetwork.h"
+#include "AbilitySystemGlobals.h"
+#include "AbilitySystem/LyraAbilitySet.h"
+#include "AbilitySystem/LyraAbilitySystemComponent.h"
 
 void FLyraEquipmentList::PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize)
 {
@@ -18,23 +21,40 @@ void FLyraEquipmentList::PostReplicatedChange(const TArrayView<int32> ChangedInd
 {
 }
 
-ULyraEquipmentInstance* FLyraEquipmentList::AddEntry(TSubclassOf<ULyraEquipment> Equipment)
+ULyraEquipmentInstance* FLyraEquipmentList::AddEntry(TSubclassOf<ULyraEquipmentDefinition> Equipment)
 {
     ULyraEquipmentInstance* EquipmentInstance = nullptr;
     check(Equipment);
     check(Owner);
     check(Owner->GetOwner()->HasAuthority());
 
-    auto EquipmentCDO = GetDefault<ULyraEquipment>(Equipment);
-    auto InstanceClass = EquipmentCDO->InstanceClass ? EquipmentCDO->InstanceClass : TSubclassOf<ULyraEquipmentInstance>(ULyraEquipmentInstance::StaticClass());
+    auto EquipmentCDO = GetDefault<ULyraEquipmentDefinition>(Equipment);
+    auto InstanceClass = EquipmentCDO->EquipmentInstance ? EquipmentCDO->EquipmentInstance : TSubclassOf<ULyraEquipmentInstance>(ULyraEquipmentInstance::StaticClass());
     auto& NewEntry = EquipmentEntries.AddDefaulted_GetRef();
     NewEntry.EquipmentClass = Equipment;
     NewEntry.EquipmentInstance = NewObject<ULyraEquipmentInstance>(Owner->GetOwner(), InstanceClass);
     EquipmentInstance = NewEntry.EquipmentInstance;
 
+    if (auto AbilitySysComp = GetAbilitySystemComponent())
+    {
+        for (auto& AbilitySet : EquipmentCDO->AbilitySets)
+        {
+            AbilitySet->GiveToAbilitySystem(AbilitySysComp, &NewEntry.GrantedAbilityHandles, EquipmentInstance);
+        }
+    }
+
+    EquipmentInstance->SpawnEquipmentActor(EquipmentCDO->EquipmentsToSpawn);
+
     MarkItemDirty(NewEntry);
 
     return EquipmentInstance;
+}
+
+ULyraAbilitySystemComponent* FLyraEquipmentList::GetAbilitySystemComponent() const
+{
+    check(Owner);
+    auto ParentActor = Owner->GetOwner();
+    return Cast<ULyraAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(ParentActor));
 }
 
 ULyraEquipmentManagerComponent::ULyraEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer)
@@ -52,7 +72,7 @@ void ULyraEquipmentManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetime
     DOREPLIFETIME(ThisClass, EquipmentList);
 }
 
-ULyraEquipmentInstance* ULyraEquipmentManagerComponent::EquipItem(TSubclassOf<ULyraEquipment> EquipmentClass)
+ULyraEquipmentInstance* ULyraEquipmentManagerComponent::EquipItem(TSubclassOf<ULyraEquipmentDefinition> EquipmentClass)
 {
     ULyraEquipmentInstance* EquipmentInstance = nullptr;
     if (EquipmentClass)

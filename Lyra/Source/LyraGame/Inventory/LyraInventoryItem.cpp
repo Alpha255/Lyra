@@ -3,6 +3,11 @@
 
 #include "Inventory/LyraInventoryItem.h"
 
+ULyraInventoryItem::ULyraInventoryItem(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+}
+
 const ULyraInventoryItemFragment* ULyraInventoryItem::FindFragmentByClass(TSubclassOf<ULyraInventoryItemFragment> FragmentClass) const
 {
     if (FragmentClass)

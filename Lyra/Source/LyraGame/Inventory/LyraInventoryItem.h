@@ -25,6 +25,8 @@ class LYRAGAME_API ULyraInventoryItem : public UObject
 	GENERATED_BODY()
 	
 public:
+    ULyraInventoryItem(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
     const ULyraInventoryItemFragment* FindFragmentByClass(TSubclassOf<ULyraInventoryItemFragment> FragmentClass) const;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Display")

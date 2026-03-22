@@ -28,6 +28,12 @@ public:
 
     void SetInstigator(UObject* InInstigator) { Instigator = InInstigator; }
 
+    UFUNCTION(BlueprintPure, Category = "Equipment")
+    APawn* GetPawn() const;
+
+    virtual void SpawnEquipmentActor(const TArray<struct FLyraEquipmentToSpawn>& ActorsToSpawn);
+    virtual void DestroyEquipmentActors();
+
     virtual void OnEquipped();
     virtual void OnUnequipped();
 protected:

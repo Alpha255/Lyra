@@ -21,7 +21,7 @@ public:
 	TSubclassOf<APawn> PawnClass;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Abilities")
-    TArray<TObjectPtr<class ULyraGameplayAbilitySet>> GameplayAbilitySets;
+    TArray<TObjectPtr<class ULyraAbilitySet>> AbilitySets;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Input")
 	TObjectPtr<class ULyraInputConfig> InputConfig;

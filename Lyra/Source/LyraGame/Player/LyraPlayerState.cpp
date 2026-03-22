@@ -10,7 +10,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Net/Core/PushModel/PushModel.h"
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
-#include "AbilitySystem/LyraGameplayAbilitySet.h"
+#include "AbilitySystem/LyraAbilitySet.h"
 
 ALyraPlayerState::ALyraPlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -82,11 +82,11 @@ void ALyraPlayerState::SetPawnData(const ULyraPawnData* InPawnData)
 		MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, PawnData, this);
 		PawnData = InPawnData;
 
-        for (const auto& AbilitySet : PawnData->GameplayAbilitySets)
+        for (const auto& AbilitySet : PawnData->AbilitySets)
         {
             if (AbilitySet)
             {
-                AbilitySet->GiveAbility(AbilitySysComp, nullptr);
+                AbilitySet->GiveToAbilitySystem(AbilitySysComp, nullptr);
             }
         }
 

@@ -16,5 +16,5 @@ class LYRAGAME_API ULyraInventoryFragment_EquippableItem : public ULyraInventory
 	
 public:
     UPROPERTY(EditAnywhere, Category = "Lyra")
-    TSubclassOf<class ULyraEquipment> Equipment;
+    TSubclassOf<class ULyraEquipmentDefinition> Equipment;
 };

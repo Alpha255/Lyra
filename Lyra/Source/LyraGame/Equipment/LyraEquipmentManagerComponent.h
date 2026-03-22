@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/PawnComponent.h"
 #include "Net/Serialization/FastArraySerializer.h"
-#include "AbilitySystem/LyraGameplayAbilitySet.h"
+#include "AbilitySystem/LyraAbilitySet.h"
 #include "LyraEquipmentManagerComponent.generated.h"
 
 /**
@@ -22,13 +22,13 @@ private:
     friend struct FLyraEquipmentList;
 
     UPROPERTY()
-    TSubclassOf<class ULyraEquipment> EquipmentClass;
+    TSubclassOf<class ULyraEquipmentDefinition> EquipmentClass;
 
     UPROPERTY()
     TObjectPtr<class ULyraEquipmentInstance> EquipmentInstance;
 
     UPROPERTY(NotReplicated)
-    FLyraGrantedGameplayAbilityHandles GrantedAbilityHandles;
+    FLyraAbilitySet_GrantedHandles GrantedAbilityHandles;
 };
 
 USTRUCT(BlueprintType)
@@ -56,8 +56,10 @@ public:
         return FFastArraySerializer::FastArrayDeltaSerialize<FLyraEquipmentEntry, FLyraEquipmentList>(EquipmentEntries, DeltaParms, *this);
     }
 
-    ULyraEquipmentInstance* AddEntry(TSubclassOf<ULyraEquipment> Equipment);
+    ULyraEquipmentInstance* AddEntry(TSubclassOf<ULyraEquipmentDefinition> Equipment);
 private:
+    class ULyraAbilitySystemComponent* GetAbilitySystemComponent() const;
+
     UPROPERTY()
     TArray<FLyraEquipmentEntry> EquipmentEntries;
 
@@ -83,7 +85,7 @@ public:
     ULyraEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    class ULyraEquipmentInstance* EquipItem(TSubclassOf<class ULyraEquipment> EquipmentClass);
+    class ULyraEquipmentInstance* EquipItem(TSubclassOf<class ULyraEquipmentDefinition> EquipmentClass);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	TArray<class ULyraEquipmentInstance*> GetEquipmentInstancesOfType(TSubclassOf<ULyraEquipmentInstance> EquipmentType) const;
