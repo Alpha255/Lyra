@@ -5,6 +5,9 @@
 #include "GameFramework/Character.h"
 #include "Curves/CurveVector.h"
 #include "Player/LyraPlayerController.h"
+#include "GameFramework/CameraBlockingVolume.h"
+
+static const FName NAME_IgnoreCameraCollision = TEXT("IgnoreCameraCollision");
 
 ULyraThirdPersonCameraMode::ULyraThirdPersonCameraMode()
 {
@@ -143,4 +146,135 @@ void ULyraThirdPersonCameraMode::UpdatePreventPenetration(float DeltaTime)
 
 void ULyraThirdPersonCameraMode::PreventCameraPenetration(const AActor& ViewTarget, const FVector& SafeLocation, FVector& CameraLocation, const float DeltaTime, float& DistBlockedPct, bool bSingleRayOnly)
 {
+    float HardBlockedPct = DistBlockedPct;
+    float SoftBlockedPct = DistBlockedPct;
+
+    float DistBlockedPctLocal = 1.0f;
+
+    FVector BaseRay = CameraLocation - SafeLocation;
+    FRotationMatrix BaseRayMatrix(BaseRay.Rotation());
+    FVector BaseRayLocalUp, BaseRayLocalForward, BaseRayLocalRight;
+
+    BaseRayMatrix.GetScaledAxes(BaseRayLocalForward, BaseRayLocalRight, BaseRayLocalUp);
+
+    const int32 NumRays = bSingleRayOnly ? FMath::Min(1.0f, PenetrationAvoidanceFeelers.Num()) : PenetrationAvoidanceFeelers.Num();
+    FCollisionQueryParams CollisionQueryParams(SCENE_QUERY_STAT(CameraPen), false, nullptr);
+    CollisionQueryParams.AddIgnoredActor(&ViewTarget);
+
+    FCollisionShape CollisionShape = FCollisionShape::MakeSphere(0.0f);
+    auto World = GetWorld();
+
+    for (int32 Index = 0; Index < NumRays; ++Index)
+    {
+        FLyraPenetrationAvoidanceFeeler& Feeler = PenetrationAvoidanceFeelers[Index];
+        if (Feeler.FramesUntilNextTrace <= 0)
+        {
+            FVector RayTarget;
+            {
+                FVector RotatedRay = BaseRay.RotateAngleAxis(Feeler.AdjustmentRot.Yaw, BaseRayLocalUp);
+                RotatedRay = RotatedRay.RotateAngleAxis(Feeler.AdjustmentRot.Pitch, BaseRayLocalRight);
+                RayTarget = SafeLocation + RotatedRay;
+            }
+
+            CollisionShape.Sphere.Radius = Feeler.Extent;
+
+            FHitResult HitResult;
+            const bool bHit = World->SweepSingleByChannel(HitResult, SafeLocation, RayTarget, FQuat::Identity, ECC_Camera, CollisionShape, CollisionQueryParams);
+
+            Feeler.FramesUntilNextTrace = Feeler.TraceInterval;
+
+            auto const HitActor = HitResult.GetActor();
+
+            if (bHit && HitActor)
+            {
+                bool bIgnoreHit = false;
+
+                if (HitActor->ActorHasTag(NAME_IgnoreCameraCollision))
+                {
+                    bIgnoreHit = true;
+                    CollisionQueryParams.AddIgnoredActor(HitActor);
+                }
+
+                if (!bIgnoreHit && HitActor->IsA<ACameraBlockingVolume>())
+                {
+                    const FVector ViewTargetForwardXY = ViewTarget.GetActorForwardVector().GetSafeNormal2D();
+                    const FVector ViewTargetLocation = ViewTarget.GetActorLocation();
+                    const FVector HitOffset = HitResult.Location - ViewTargetLocation;
+                    const FVector HitDirectionXY = HitOffset.GetSafeNormal2D();
+                    const float DotHitDirection = FVector::DotProduct(ViewTargetForwardXY, HitDirectionXY);
+                    if (DotHitDirection > 0.0f)
+                    {
+                        bIgnoreHit = true;
+                        CollisionQueryParams.AddIgnoredActor(HitActor);
+                    }
+                    else
+                    {
+                    }
+                }
+
+                if (!bIgnoreHit)
+                {
+                    float const Weight = Cast<APawn>(HitResult.GetActor()) ? Feeler.PawnWeight : Feeler.WorldWeight;
+                    float BlockPct = HitResult.Time;
+                    BlockPct += (1.0f - BlockPct) * (1.0f - Weight);
+
+                    BlockPct = ((HitResult.Location - SafeLocation).Size() - CollisionPushOutDistance) / (RayTarget - SafeLocation).Size();
+                    DistBlockedPctLocal = FMath::Min(BlockPct, DistBlockedPctLocal);
+                }
+            }
+
+            if (Index == 0)
+            {
+                HardBlockedPct = DistBlockedPctLocal;
+            }
+            else
+            {
+                SoftBlockedPct = DistBlockedPctLocal;
+            }
+        }
+        else
+        {
+            --Feeler.FramesUntilNextTrace;
+        }
+    }
+
+    if (bResetInterpolation)
+    {
+        DistBlockedPct = DistBlockedPctLocal;
+    }
+    else if (DistBlockedPct < DistBlockedPctLocal)
+    {
+        if (PenetrationBlendOutTime > DeltaTime)
+        {
+            DistBlockedPct = DistBlockedPct + DeltaTime / PenetrationBlendOutTime * (DistBlockedPctLocal - DistBlockedPct);
+        }
+        else
+        {
+            DistBlockedPct = DistBlockedPctLocal;
+        }
+    }
+    else
+    {
+        if (DistBlockedPct > HardBlockedPct)
+        {
+            DistBlockedPct = HardBlockedPct;
+        }
+        else if (DistBlockedPct > SoftBlockedPct)
+        {
+            if (PenetrationBlendOutTime > DeltaTime)
+            {
+                DistBlockedPct = DistBlockedPct - DeltaTime / PenetrationBlendOutTime * (DistBlockedPct - SoftBlockedPct);
+            }
+            else
+            {
+                DistBlockedPct = SoftBlockedPct;
+            }
+        }
+    }
+
+    DistBlockedPct = FMath::Clamp<float>(DistBlockedPct, 0.0f, 1.0f);
+    if (DistBlockedPct < (1.0f - ZERO_ANIMWEIGHT_THRESH))
+    {
+        CameraLocation = SafeLocation + (CameraLocation - SafeLocation) * DistBlockedPct;
+    }
 }

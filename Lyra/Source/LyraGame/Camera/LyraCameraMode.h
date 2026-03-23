@@ -86,4 +86,8 @@ protected:
 	float BlendAlpha;
 
 	float BlendWeight;
+
+protected:
+    UPROPERTY(Transient)
+    uint32 bResetInterpolation : 1;
 };
