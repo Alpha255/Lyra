@@ -61,7 +61,7 @@ void ULyraCameraModeStack::PushCameraMode(TSubclassOf<ULyraCameraMode> CameraMod
         }
         else
         {
-			Weight = 1.0f - CameraModes[Index]->GetBlendWeight();
+			Weight *= (1.0f - CameraModes[Index]->GetBlendWeight());
         }
     }
 
@@ -151,7 +151,7 @@ void ULyraCameraModeStack::Update(float DeltaTime)
     {
         for (int32 Index = StartIndex; Index < CameraModes.Num(); ++Index)
         {
-            auto CameraMode = CameraModes[Index];
+            auto& CameraMode = CameraModes[Index];
             check(CameraMode);
 
             CameraMode->Deactivate();

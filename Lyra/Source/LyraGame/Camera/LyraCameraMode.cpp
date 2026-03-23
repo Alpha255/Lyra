@@ -113,7 +113,7 @@ void ULyraCameraMode::UpdateBlending(float DeltaTime)
 {
 	if (BlendTime > 0.0f)
 	{
-		BlendAlpha += DeltaTime / BlendTime;
+		BlendAlpha += (DeltaTime / BlendTime);
 		BlendAlpha = FMath::Min(BlendAlpha, 1.0f);
 	}
 	else
@@ -152,11 +152,10 @@ FVector ULyraCameraMode::GetPivotLocation() const
 		if (auto TargetCharacter = Cast<ACharacter>(TargetPawn))
 		{
 			const auto TargetCharacterClassDefaultObject = TargetCharacter->GetClass()->GetDefaultObject<ACharacter>();
-			const float DefaultHalfHeight = TargetCharacterClassDefaultObject->GetCapsuleComponent()
-				->GetUnscaledCapsuleHalfHeight();
+			const float DefaultHalfHeight = TargetCharacterClassDefaultObject->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 			const float HalfHeight = TargetCharacter->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 
-			return TargetCharacter->GetActorLocation() + FVector::UpVector + (DefaultHalfHeight - HalfHeight + TargetCharacterClassDefaultObject->BaseEyeHeight);
+			return TargetCharacter->GetActorLocation() + FVector::UpVector * (DefaultHalfHeight - HalfHeight + TargetCharacterClassDefaultObject->BaseEyeHeight);
 		}
 
 		return TargetPawn->GetPawnViewLocation();
