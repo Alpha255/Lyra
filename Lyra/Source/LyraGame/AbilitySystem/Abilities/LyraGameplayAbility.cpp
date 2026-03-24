@@ -2,6 +2,7 @@
 
 
 #include "AbilitySystem/Abilities/LyraGameplayAbility.h"
+#include "Character/LyraCharacter.h"
 
 AController* ULyraGameplayAbility::GetController() const
 {
@@ -30,4 +31,9 @@ AController* ULyraGameplayAbility::GetController() const
     }
 
     return nullptr;
+}
+
+ALyraCharacter* ULyraGameplayAbility::GetLyraCharacter() const
+{
+    return CurrentActorInfo ? Cast<ALyraCharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr;
 }

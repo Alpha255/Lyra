@@ -18,4 +18,7 @@ class LYRAGAME_API ULyraGameplayAbility : public UGameplayAbility
 public:
     UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
     AController* GetController() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
+    class ALyraCharacter* GetLyraCharacter() const;
 };
