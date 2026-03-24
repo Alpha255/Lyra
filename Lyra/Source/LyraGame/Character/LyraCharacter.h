@@ -14,6 +14,7 @@ class LYRAGAME_API ALyraCharacter : public AModularCharacter
 public:
 	ALyraCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+    void ToggleCrouch();
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;

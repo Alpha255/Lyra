@@ -334,7 +334,7 @@ void ULyraHeroComponent::Input_Crouch(const FInputActionValue& ActionValue)
 {
     if (auto Character = GetPawn<ALyraCharacter>())
     {
-
+        Character->ToggleCrouch();
     }
 }
 

@@ -82,3 +82,18 @@ void ALyraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PawnComponent->OnSetupPlayerInputComponent();
 }
+
+void ALyraCharacter::ToggleCrouch()
+{
+    auto MoveComp = CastChecked<ULyraCharacterMovementComponent>(GetCharacterMovement());
+    check(MoveComp);
+
+    if (bIsCrouched || MoveComp->bWantsToCrouch)
+    {
+        UnCrouch();
+    }
+    else if (MoveComp->IsMovingOnGround())
+    {
+        Crouch();
+    }
+}

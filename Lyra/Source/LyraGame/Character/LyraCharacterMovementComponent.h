@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Config = Game)
 class LYRAGAME_API ULyraCharacterMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
