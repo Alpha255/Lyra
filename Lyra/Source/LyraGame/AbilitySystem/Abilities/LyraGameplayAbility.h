@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, HideCategories = Input)
 class LYRAGAME_API ULyraGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
