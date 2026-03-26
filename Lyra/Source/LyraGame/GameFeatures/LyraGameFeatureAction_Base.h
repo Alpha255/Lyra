@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFeatureAction.h"
 #include "GameFeaturesSubsystem.h"
-#include "GameFeatureAction_Base.generated.h"
+#include "LyraGameFeatureAction_Base.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LYRAGAME_API UGameFeatureAction_Base : public UGameFeatureAction
+class LYRAGAME_API ULyraGameFeatureAction_Base : public UGameFeatureAction
 {
 	GENERATED_BODY()
 	
@@ -22,7 +22,7 @@ public:
 private:
     void OnGameInstanceStart(UGameInstance* GameInstance, FGameFeatureStateChangeContext Context);
 
-    virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& Context) PURE_VIRTUAL(UGameFeatureAction_Base::AddToWorld, );
+    virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& Context) PURE_VIRTUAL(ULyraGameFeatureAction_Base::AddToWorld, );
 private:
     TMap<FGameFeatureStateChangeContext, FDelegateHandle> ContextDelegateHandles;
 };

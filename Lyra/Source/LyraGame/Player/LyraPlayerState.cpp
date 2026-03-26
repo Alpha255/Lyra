@@ -11,6 +11,9 @@
 #include "Net/Core/PushModel/PushModel.h"
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AbilitySystem/LyraAbilitySet.h"
+#include "Components/GameFrameworkComponentManager.h"
+
+const FName ALyraPlayerState::LyraAbilityReady("LyraAbilityReady");
 
 ALyraPlayerState::ALyraPlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -89,6 +92,8 @@ void ALyraPlayerState::SetPawnData(const ULyraPawnData* InPawnData)
                 AbilitySet->GiveToAbilitySystem(AbilitySysComp, nullptr);
             }
         }
+
+        UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this, LyraAbilityReady);
 
 		ForceNetUpdate();
 	}

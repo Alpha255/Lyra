@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/PawnComponent.h"
 #include "Components/GameFrameworkInitStateInterface.h"
-#include "GameFeatures/GFA_AddInputContextMapping.h"
+#include "GameFeatures/LyraGameFeatureAction_AddInputContextMapping.h"
 #include "LyraHeroComponent.generated.h"
 
 /**

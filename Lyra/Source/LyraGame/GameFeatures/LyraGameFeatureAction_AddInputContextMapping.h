@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFeatures/GameFeatureAction_Base.h"
-#include "GFA_AddInputContextMapping.generated.h"
+#include "GameFeatures/LyraGameFeatureAction_Base.h"
+#include "LyraGameFeatureAction_AddInputContextMapping.generated.h"
 
 /**
  * 
@@ -26,7 +26,7 @@ struct FLyraInputMappingContext
 };
 
 UCLASS(MinimalAPI, Meta = (DisplayName = "Add Input Mapping"))
-class UGFA_AddInputContextMapping : public UGameFeatureAction_Base
+class UGameFeatureAction_AddInputContextMapping : public ULyraGameFeatureAction_Base
 {
 	GENERATED_BODY()
 	

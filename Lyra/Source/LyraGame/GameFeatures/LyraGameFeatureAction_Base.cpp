@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameFeatures/GameFeatureAction_Base.h"
+#include "GameFeatures/LyraGameFeatureAction_Base.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 
-void UGameFeatureAction_Base::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
+void ULyraGameFeatureAction_Base::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
     // Register the game instance start delegate
     ContextDelegateHandles.FindOrAdd(Context) = FWorldDelegates::OnStartGameInstance.AddUObject(
         this, 
-        &UGameFeatureAction_Base::OnGameInstanceStart, 
+        &ULyraGameFeatureAction_Base::OnGameInstanceStart, 
         FGameFeatureStateChangeContext(Context));
 
     // Add to any worlds with associated game instances that have already been initialized
@@ -23,7 +23,7 @@ void UGameFeatureAction_Base::OnGameFeatureActivating(FGameFeatureActivatingCont
     }
 }
 
-void UGameFeatureAction_Base::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
+void ULyraGameFeatureAction_Base::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
 {
     // Unregister the game instance start delegate
     if (FDelegateHandle* Handle = ContextDelegateHandles.Find(Context))
@@ -34,7 +34,7 @@ void UGameFeatureAction_Base::OnGameFeatureDeactivating(FGameFeatureDeactivating
     // This is where you would typically remove components or clean up any state related to the feature
 }
 
-void UGameFeatureAction_Base::OnGameInstanceStart(UGameInstance* GameInstance, FGameFeatureStateChangeContext Context)
+void ULyraGameFeatureAction_Base::OnGameInstanceStart(UGameInstance* GameInstance, FGameFeatureStateChangeContext Context)
 {
     if (FWorldContext* WorldContext = GameInstance->GetWorldContext())
     {

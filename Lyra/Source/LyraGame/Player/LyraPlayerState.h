@@ -22,6 +22,8 @@ public:
 	const class ULyraPawnData* GetPawnData() const { return PawnData; }
 
 	void SetPawnData(const class ULyraPawnData* InPawnData);
+
+    static const FName LyraAbilityReady;
 protected:
 	UFUNCTION()
 	void OnRep_PawnData();

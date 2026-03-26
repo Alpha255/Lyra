@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameFeatures/GFA_AddInputContextMapping.h"
+#include "GameFeatures/LyraGameFeatureAction_AddInputContextMapping.h"
 #include "InputMappingContext.h"
 #include "Engine/World.h"
 #include "Engine/GameInstance.h"
@@ -19,7 +19,7 @@
 #define LOCTEXT_NAMESPACE "GameFeatures"
 
 #if WITH_EDITOR
-EDataValidationResult UGFA_AddInputContextMapping::IsDataValid(FDataValidationContext& Context) const
+EDataValidationResult UGameFeatureAction_AddInputContextMapping::IsDataValid(FDataValidationContext& Context) const
 {
     EDataValidationResult Result = CombineDataValidationResults(Super::IsDataValid(Context), EDataValidationResult::Valid);
     
@@ -37,21 +37,21 @@ EDataValidationResult UGFA_AddInputContextMapping::IsDataValid(FDataValidationCo
 }
 #endif
 
-void UGFA_AddInputContextMapping::OnGameFeatureRegistering()
+void UGameFeatureAction_AddInputContextMapping::OnGameFeatureRegistering()
 {
     Super::OnGameFeatureRegistering();
 
     RegisterInputMappingContexts();
 }
 
-void UGFA_AddInputContextMapping::OnGameFeatureUnregistering()
+void UGameFeatureAction_AddInputContextMapping::OnGameFeatureUnregistering()
 {
     Super::OnGameFeatureUnregistering();
 
     UnregisterInputMappingContexts();
 }
 
-void UGFA_AddInputContextMapping::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
+void UGameFeatureAction_AddInputContextMapping::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
     auto& ActiveData = ContextData.FindOrAdd(Context);
     if (!ensure(ActiveData.ExtRequestHandles.IsEmpty()) ||
@@ -63,7 +63,7 @@ void UGFA_AddInputContextMapping::OnGameFeatureActivating(FGameFeatureActivating
     Super::OnGameFeatureActivating(Context);
 }
 
-void UGFA_AddInputContextMapping::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
+void UGameFeatureAction_AddInputContextMapping::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
 {
     Super::OnGameFeatureDeactivating(Context);
 
@@ -74,7 +74,7 @@ void UGFA_AddInputContextMapping::OnGameFeatureDeactivating(FGameFeatureDeactiva
     }
 }
 
-void UGFA_AddInputContextMapping::AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext)
+void UGameFeatureAction_AddInputContextMapping::AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext)
 {
     auto World = WorldContext.World();
     auto GameInstance = WorldContext.OwningGameInstance;
@@ -92,16 +92,16 @@ void UGFA_AddInputContextMapping::AddToWorld(const FWorldContext& WorldContext, 
     }
 }
 
-void UGFA_AddInputContextMapping::RegisterInputMappingContexts()
+void UGameFeatureAction_AddInputContextMapping::RegisterInputMappingContexts()
 {
-    RegisterIM_Deletage = FWorldDelegates::OnStartGameInstance.AddUObject(this, &UGFA_AddInputContextMapping::RegisterInputMappingContexts);
+    RegisterIM_Deletage = FWorldDelegates::OnStartGameInstance.AddUObject(this, &UGameFeatureAction_AddInputContextMapping::RegisterInputMappingContexts);
     for (auto It = GEngine->GetWorldContexts().CreateConstIterator(); It; ++It)
     {
         RegisterInputMappingContexts(It->OwningGameInstance);
     }
 }
 
-void UGFA_AddInputContextMapping::UnregisterInputMappingContexts()
+void UGameFeatureAction_AddInputContextMapping::UnregisterInputMappingContexts()
 {
     FWorldDelegates::OnStartGameInstance.Remove(RegisterIM_Deletage);
     RegisterIM_Deletage.Reset();
@@ -112,12 +112,12 @@ void UGFA_AddInputContextMapping::UnregisterInputMappingContexts()
     }
 }
 
-void UGFA_AddInputContextMapping::RegisterInputMappingContexts(UGameInstance* GameInstance)
+void UGameFeatureAction_AddInputContextMapping::RegisterInputMappingContexts(UGameInstance* GameInstance)
 {
     if (GameInstance && !GameInstance->OnLocalPlayerAddedEvent.IsBoundToObject(this))
     {
-        GameInstance->OnLocalPlayerAddedEvent.AddUObject(this, &UGFA_AddInputContextMapping::RegisterInputMappingContexts);
-        GameInstance->OnLocalPlayerRemovedEvent.AddUObject(this, &UGFA_AddInputContextMapping::UnregisterInputMappingContexts);
+        GameInstance->OnLocalPlayerAddedEvent.AddUObject(this, &UGameFeatureAction_AddInputContextMapping::RegisterInputMappingContexts);
+        GameInstance->OnLocalPlayerRemovedEvent.AddUObject(this, &UGameFeatureAction_AddInputContextMapping::UnregisterInputMappingContexts);
 
         for (auto It = GameInstance->GetLocalPlayerIterator(); It; ++It)
         {
@@ -126,7 +126,7 @@ void UGFA_AddInputContextMapping::RegisterInputMappingContexts(UGameInstance* Ga
     }
 }
 
-void UGFA_AddInputContextMapping::UnregisterInputMappingContexts(UGameInstance* GameInstance)
+void UGameFeatureAction_AddInputContextMapping::UnregisterInputMappingContexts(UGameInstance* GameInstance)
 {
     if (GameInstance)
     {
@@ -140,7 +140,7 @@ void UGFA_AddInputContextMapping::UnregisterInputMappingContexts(UGameInstance* 
     }
 }
 
-void UGFA_AddInputContextMapping::RegisterInputMappingContexts(ULocalPlayer* LocalPlayer)
+void UGameFeatureAction_AddInputContextMapping::RegisterInputMappingContexts(ULocalPlayer* LocalPlayer)
 {
     if (!ensure(LocalPlayer))
     {
@@ -167,7 +167,7 @@ void UGFA_AddInputContextMapping::RegisterInputMappingContexts(ULocalPlayer* Loc
     }
 }
 
-void UGFA_AddInputContextMapping::UnregisterInputMappingContexts(ULocalPlayer* LocalPlayer)
+void UGameFeatureAction_AddInputContextMapping::UnregisterInputMappingContexts(ULocalPlayer* LocalPlayer)
 {
     if (!ensure(LocalPlayer))
     {
@@ -194,7 +194,7 @@ void UGFA_AddInputContextMapping::UnregisterInputMappingContexts(ULocalPlayer* L
     }
 }
 
-void UGFA_AddInputContextMapping::Reset(FPerContextData& ActiveData)
+void UGameFeatureAction_AddInputContextMapping::Reset(FPerContextData& ActiveData)
 {
     ActiveData.ExtRequestHandles.Empty();
 
@@ -212,7 +212,7 @@ void UGFA_AddInputContextMapping::Reset(FPerContextData& ActiveData)
     }
 }
 
-void UGFA_AddInputContextMapping::AddInputMapping(UPlayer* Player, FPerContextData& ActiveData)
+void UGameFeatureAction_AddInputContextMapping::AddInputMapping(UPlayer* Player, FPerContextData& ActiveData)
 {
     if (auto LocalPlayer = Cast<ULocalPlayer>(Player))
     {
@@ -233,7 +233,7 @@ void UGFA_AddInputContextMapping::AddInputMapping(UPlayer* Player, FPerContextDa
     }
 }
 
-void UGFA_AddInputContextMapping::RemoveInputMapping(APlayerController* PlayerController, FPerContextData& ActiveData)
+void UGameFeatureAction_AddInputContextMapping::RemoveInputMapping(APlayerController* PlayerController, FPerContextData& ActiveData)
 {
     if (auto LocalPlayer = PlayerController->GetLocalPlayer())
     {
@@ -250,7 +250,7 @@ void UGFA_AddInputContextMapping::RemoveInputMapping(APlayerController* PlayerCo
     }
 }
 
-void UGFA_AddInputContextMapping::HandleControllerExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext)
+void UGameFeatureAction_AddInputContextMapping::HandleControllerExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext)
 {
     auto PlayerController = Cast<APlayerController>(Actor);
     auto& ActiveData = ContextData.FindOrAdd(ChangeContext);
