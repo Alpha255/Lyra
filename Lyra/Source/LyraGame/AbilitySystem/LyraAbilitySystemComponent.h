@@ -22,7 +22,7 @@ public:
     void AbilityInputTagPressed(FGameplayTag& InputTag);
     void AbilityInputTagReleased(FGameplayTag& InputTag);
 
-    void ProcessAbilityInputTag(float DeltaTime, bool bGamePaused);
+    void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
     void ClearAbilityInput();
 protected:
     int32 NumActivationGroups[(uint8)ELyraAbilityActivationGroup::MAX];

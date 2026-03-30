@@ -161,7 +161,7 @@ void ULyraGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, c
 
 bool ULyraGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo * ActorInfo, OUT FGameplayTagContainer * OptionalRelevantTags) const
 {
-    return false;
+    return true;
 }
 
 void ULyraGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
@@ -178,7 +178,7 @@ void ULyraGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectS
 
 bool ULyraGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent & AbilitySystemComponent, const FGameplayTagContainer * SourceTags, const FGameplayTagContainer * TargetTags, OUT FGameplayTagContainer * OptionalRelevantTags) const
 {
-    return false;
+    return true;
 }
 
 void ULyraGameplayAbility::OnPawnSet()

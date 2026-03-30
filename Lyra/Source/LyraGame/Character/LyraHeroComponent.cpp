@@ -19,6 +19,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Camera/LyraCameraMode.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
+#include "AbilitySystem/LyraAbilitySystemComponent.h"
 
 const FName ULyraHeroComponent::NAME_Feature(TEXT("LyraHeroComp"));
 const FName ULyraHeroComponent::NAME_ReadyToBindInputs(TEXT("LyraHeroCompReadeToBindInputs"));
@@ -284,9 +285,9 @@ void ULyraHeroComponent::Input_AbilityTagPressed(FGameplayTag Tag)
     {
         if (auto PawnComp = ULyraPawnComponent::GetPawnComponent(Pawn))
         {
-            if (auto LyraASC = PawnComp->GetLyraAbilitySystemComponent())
+            if (auto LyraASC = PawnComp->GetAbilitySystemComponent())
             {
-                LyraASC->AbilityInInput_AbilityTagPressed(Tag);
+                LyraASC->AbilityInputTagPressed(Tag);
             }
         }
     }
@@ -294,6 +295,16 @@ void ULyraHeroComponent::Input_AbilityTagPressed(FGameplayTag Tag)
 
 void ULyraHeroComponent::Input_AbilityTagReleased(FGameplayTag Tag)
 {
+    if (auto Pawn = GetPawn<APawn>())
+    {
+        if (auto PawnComp = ULyraPawnComponent::GetPawnComponent(Pawn))
+        {
+            if (auto LyraASC = PawnComp->GetAbilitySystemComponent())
+            {
+                LyraASC->AbilityInputTagReleased(Tag);
+            }
+        }
+    }
 }
 
 void ULyraHeroComponent::Input_Move(const FInputActionValue& ActionValue)

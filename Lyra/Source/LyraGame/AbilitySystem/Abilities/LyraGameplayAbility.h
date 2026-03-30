@@ -81,6 +81,9 @@ protected:
         AActor*& OutEffectCauser) const;
 
 public:
+    ELyraAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
+    ELyraAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
+
     UFUNCTION(BlueprintImplementableEvent, Category = "Ability", DisplayName = "OnAbilityAdded")
     void K2_OnAbilityAdded();
 

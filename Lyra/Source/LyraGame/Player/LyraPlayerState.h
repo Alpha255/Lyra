@@ -23,7 +23,8 @@ public:
 
 	void SetPawnData(const class ULyraPawnData* InPawnData);
 
-    virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+    UFUNCTION(BlueprintCallable, Category = "Lyra|PlayerState")
+    class ULyraAbilitySystemComponent* GetLyraAbilitySystemComponent() const { return AbilitySysComp; }
 
     static const FName LyraAbilityReady;
 protected:

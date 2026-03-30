@@ -18,11 +18,18 @@ class LYRAGAME_API ALyraPlayerController : public ACommonPlayerController, publi
 public:
 	ALyraPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+    UFUNCTION(BlueprintCallable, Category = "Lyra|PlayerController")
+    class ALyraPlayerState* GetLyraPlayerState() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Lyra|PlayerController")
+    class ULyraAbilitySystemComponent* GetLyraAbilitySystemComponent() const;
+
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 
 	virtual void OnCameraPenetratingTarget() override;
 
+    virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
 protected:
 	bool bHideViewTargetPawnNextFrame = false;
 };
