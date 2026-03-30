@@ -80,6 +80,7 @@ protected:
         const class ILyraAbilitySourceInterface*& OutAbilitySource, 
         AActor*& OutEffectCauser) const;
 
+public:
     UFUNCTION(BlueprintImplementableEvent, Category = "Ability", DisplayName = "OnAbilityAdded")
     void K2_OnAbilityAdded();
 
@@ -89,13 +90,19 @@ protected:
     UFUNCTION(BlueprintImplementableEvent, Category = "Ability", DisplayName = "OnPawnSet")
     void K2_OnPawnSet();
 
-public:
     UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
     AController* GetController() const;
 
     UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
     class ALyraCharacter* GetLyraCharacter() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
+    class ULyraHeroComponent* GetHeroComponent();
+
+    UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
+    void ClearCameraMode();
+   
+    void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Ability Activation")
     ELyraAbilityActivationPolicy ActivationPolicy;

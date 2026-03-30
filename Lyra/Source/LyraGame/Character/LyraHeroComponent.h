@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/PawnComponent.h"
 #include "Components/GameFrameworkInitStateInterface.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "GameFeatures/LyraGameFeatureAction_AddInputContextMapping.h"
 #include "LyraHeroComponent.generated.h"
 
@@ -27,6 +28,12 @@ public:
 
     bool IsReadyToBindInputs() const { return bReadyToBindInputs; }
 
+    UFUNCTION(BlueprintPure, Category = "Lyra|Hero")
+    static ULyraHeroComponent* FindHeroComponent(const AActor* Actor) { return Actor ? Actor->FindComponentByClass<ULyraHeroComponent>() : nullptr; }
+
+    void SetAbilityCameraMode(TSubclassOf<class ULyraCameraMode> CameraMode, const FGameplayAbilitySpecHandle& Handle);
+    void ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& Handle);
+
 	static const FName NAME_Feature;
     static const FName NAME_ReadyToBindInputs;
 protected:
@@ -47,6 +54,11 @@ protected:
 
     UPROPERTY(EditAnywhere)
     TArray<FLyraInputMappingContext> DefaultInputMappingContexts;
+
+    UPROPERTY()
+    TSubclassOf<class ULyraCameraMode> AbilityCameraMode;
+
+    FGameplayAbilitySpecHandle AbilityCameraModeOwningSpecHandle;
 
     bool bReadyToBindInputs = false;
 };

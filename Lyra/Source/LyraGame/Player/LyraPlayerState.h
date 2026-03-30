@@ -23,6 +23,8 @@ public:
 
 	void SetPawnData(const class ULyraPawnData* InPawnData);
 
+    virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
     static const FName LyraAbilityReady;
 protected:
 	UFUNCTION()

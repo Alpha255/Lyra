@@ -40,6 +40,9 @@ void ALyraPlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+    check(AbilitySysComp);
+    AbilitySysComp->InitAbilityActorInfo(this, GetPawn());
+
 	if (auto World = GetWorld())
 	{
 		if (World->IsGameWorld() && World->GetNetMode() != NM_Client)

@@ -7,6 +7,7 @@
 #include "LyraLogChannel.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/GameFrameworkComponentManager.h"
+#include "AbilitySystem/LyraAbilitySystemComponent.h"
 
 const FName ULyraPawnComponent::NAME_Feature(TEXT("LyraPawnComp"));
 
@@ -19,6 +20,7 @@ ULyraPawnComponent::ULyraPawnComponent(const FObjectInitializer& ObjectInitializ
 	SetIsReplicatedByDefault(true);
 
 	PawnData = nullptr;
+    AbilitySystemComponent = nullptr;
 }
 
 bool ULyraPawnComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
@@ -116,6 +118,75 @@ void ULyraPawnComponent::SetPawnData(const ULyraPawnData* InPawnData)
 
 		CheckDefaultInitialization();
 	}
+}
+
+void ULyraPawnComponent::InitializeAbilitySystem(ULyraAbilitySystemComponent* InASC, AActor* Owner)
+{
+    check(InASC && Owner);
+
+    if (InASC == AbilitySystemComponent)
+    {
+        return;
+    }
+
+    if (AbilitySystemComponent)
+    {
+        UninitializeAbilitySystem();
+    }
+
+    auto Pawn = GetPawnChecked<APawn>();
+    auto Avatar = InASC->GetAvatarActor();
+
+    if (Avatar != nullptr && Avatar != Pawn)
+    {
+        ensure(!Avatar->HasAuthority());
+
+        if (auto PawnComp = GetPawnComponent(Avatar))
+        {
+            PawnComp->UninitializeAbilitySystem();
+        }
+    }
+
+    AbilitySystemComponent = InASC;
+    AbilitySystemComponent->InitAbilityActorInfo(Owner, Pawn);
+
+    if (ensure(PawnData))
+    {
+        
+    }
+
+    OnAbilitySystemInitialized.Broadcast();
+}
+
+void ULyraPawnComponent::UninitializeAbilitySystem()
+{
+    if (!AbilitySystemComponent)
+    {
+        return;
+    }
+
+    if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
+    {
+        FGameplayTagContainer TagsToIgnore;
+        TagsToIgnore.AddTag(LyraGameplayTags::Ability_Behavior_SurvivesDeath);
+
+        AbilitySystemComponent->CancelAbilities(nullptr, &TagsToIgnore);
+        AbilitySystemComponent->ClearAbilityInput();
+        AbilitySystemComponent->RemoveAllGameplayCues();
+
+        if (AbilitySystemComponent->GetOwnerActor() != nullptr)
+        {
+            AbilitySystemComponent->SetAvatarActor(nullptr);
+        }
+        else
+        {
+            AbilitySystemComponent->ClearActorInfo();
+        }
+
+        OnAbilitySystemUninitialized.Broadcast();
+    }
+
+    AbilitySystemComponent = nullptr;
 }
 
 void ULyraPawnComponent::OnControllerChanged()

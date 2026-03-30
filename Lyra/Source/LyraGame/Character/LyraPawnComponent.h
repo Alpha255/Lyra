@@ -33,6 +33,12 @@ public:
 	const class ULyraPawnData* GetPawnData() const { return PawnData; }
 	void SetPawnData(const class ULyraPawnData* InPawnData);
 
+    UFUNCTION(BlueprintPure, Category = "Lyra|Pawn")
+    class ULyraAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilitySystemComponent; }
+
+    void InitializeAbilitySystem(class ULyraAbilitySystemComponent* InASC, AActor* Owner);
+    void UninitializeAbilitySystem();
+
 	void OnControllerChanged();
 	void OnPlayerStateReplicated();
 	void OnSetupPlayerInputComponent();
@@ -46,6 +52,12 @@ protected:
 	UFUNCTION()
 	void OnRep_PawnData();
 
+    FSimpleMulticastDelegate OnAbilitySystemInitialized;
+    FSimpleMulticastDelegate OnAbilitySystemUninitialized;
+
 	UPROPERTY(EditInstanceOnly, ReplicatedUsing=OnRep_PawnData, Category="Lyra|Pawn")
 	TObjectPtr<const class ULyraPawnData> PawnData;
+
+    UPROPERTY(Transient)
+    TObjectPtr<class ULyraAbilitySystemComponent> AbilitySystemComponent;
 };

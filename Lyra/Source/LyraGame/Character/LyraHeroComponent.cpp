@@ -17,6 +17,7 @@
 #include "Input/LyraInputComponent.h"
 #include "Character/LyraCharacter.h"
 #include "EnhancedInputSubsystems.h"
+#include "Camera/LyraCameraMode.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 
 const FName ULyraHeroComponent::NAME_Feature(TEXT("LyraHeroComp"));
@@ -101,6 +102,7 @@ void ULyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* M
 		if (auto LyraPawnComp = ULyraPawnComponent::GetPawnComponent(Pawn))
 		{
 			PawnData = LyraPawnComp->GetPawnData();
+            LyraPawnComp->InitializeAbilitySystem(PlayerState->GetLyraAbilitySystemComponent(), PlayerState);
 		}
 
 		if (auto Controller = GetController<ALyraPlayerController>())
@@ -158,6 +160,24 @@ void ULyraHeroComponent::CheckDefaultInitialization()
 	};
 
 	ContinueInitStateChain(StateChain);
+}
+
+void ULyraHeroComponent::SetAbilityCameraMode(TSubclassOf<ULyraCameraMode> CameraMode, const FGameplayAbilitySpecHandle& Handle)
+{
+    if (CameraMode)
+    {
+        AbilityCameraMode = CameraMode;
+        AbilityCameraModeOwningSpecHandle = Handle;
+    }
+}
+
+void ULyraHeroComponent::ClearAbilityCameraMode(const FGameplayAbilitySpecHandle & Handle)
+{
+    if (AbilityCameraModeOwningSpecHandle == Handle)
+    {
+        AbilityCameraMode = nullptr;
+        AbilityCameraModeOwningSpecHandle = FGameplayAbilitySpecHandle();
+    }
 }
 
 void ULyraHeroComponent::OnRegister()
@@ -260,6 +280,16 @@ void ULyraHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCompo
 
 void ULyraHeroComponent::Input_AbilityTagPressed(FGameplayTag Tag)
 {
+    if (auto Pawn = GetPawn<APawn>())
+    {
+        if (auto PawnComp = ULyraPawnComponent::GetPawnComponent(Pawn))
+        {
+            if (auto LyraASC = PawnComp->GetLyraAbilitySystemComponent())
+            {
+                LyraASC->AbilityInInput_AbilityTagPressed(Tag);
+            }
+        }
+    }
 }
 
 void ULyraHeroComponent::Input_AbilityTagReleased(FGameplayTag Tag)
