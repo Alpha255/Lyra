@@ -35,7 +35,7 @@ void ULyraAbilitySystemComponent::AbilityInputTagPressed(FGameplayTag& InputTag)
     }
 }
 
-void ULyraAbilitySystemComponent::AbilityInputTagReleased(FGameplayTag & InputTag)
+void ULyraAbilitySystemComponent::AbilityInputTagReleased(FGameplayTag& InputTag)
 {
     if (InputTag.IsValid())
     {
@@ -104,7 +104,7 @@ void ULyraAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGam
         TryActivateAbility(SpecHandle);
     }
 
-    for (const auto& SpecHandle : InputHeldSpecHandles)
+    for (const auto& SpecHandle : InputReleasedSpecHandles)
     {
         if (auto AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
         {
@@ -129,4 +129,34 @@ void ULyraAbilitySystemComponent::ClearAbilityInput()
     InputPressedSpecHandles.Reset();
     InputReleasedSpecHandles.Reset();
     InputHeldSpecHandles.Reset();
+}
+
+void ULyraAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
+{
+    Super::AbilitySpecInputPressed(Spec);
+
+    if (Spec.IsActive())
+    {
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+        const auto Instance = Spec.GetPrimaryInstance();
+        auto PredictionKey = Instance ? Instance->GetCurrentActivationInfo().GetActivationPredictionKey() : Spec.ActivationInfo.GetActivationPredictionKey();
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
+
+        InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, PredictionKey);
+    }
+}
+
+void ULyraAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& Spec)
+{
+    Super::AbilitySpecInputReleased(Spec);
+
+    if (Spec.IsActive())
+    {
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+        const auto Instance = Spec.GetPrimaryInstance();
+        auto PredictionKey = Instance ? Instance->GetCurrentActivationInfo().GetActivationPredictionKey() : Spec.ActivationInfo.GetActivationPredictionKey();
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
+
+        InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, PredictionKey);
+    }
 }

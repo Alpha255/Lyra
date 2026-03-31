@@ -24,6 +24,10 @@ public:
 
     void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
     void ClearAbilityInput();
+
+protected:
+    virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
+    virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
 protected:
     int32 NumActivationGroups[(uint8)ELyraAbilityActivationGroup::MAX];
 
