@@ -92,7 +92,39 @@ ULyraEquipmentInstance* ULyraEquipmentManagerComponent::EquipItem(TSubclassOf<UL
 	return EquipmentInstance;
 }
 
+void ULyraEquipmentManagerComponent::UnequipItem(ULyraEquipmentInstance* Instance)
+{
+}
+
+ULyraEquipmentInstance* ULyraEquipmentManagerComponent::GetFirstInstanceOfType(TSubclassOf<ULyraEquipmentInstance> EquipmentType)
+{
+    for (auto& Entry : EquipmentList.EquipmentEntries)
+    {
+        if (ULyraEquipmentInstance* Instance = Entry.EquipmentInstance)
+        {
+            if (Instance->IsA(EquipmentType))
+            {
+                return Instance;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 TArray<ULyraEquipmentInstance*> ULyraEquipmentManagerComponent::GetEquipmentInstancesOfType(TSubclassOf<ULyraEquipmentInstance> EquipmentType) const
 {
-	return TArray<ULyraEquipmentInstance*>();
+    TArray<ULyraEquipmentInstance*> EquipmentInstances;
+    for (auto& Entry : EquipmentList.EquipmentEntries)
+    {
+        if (ULyraEquipmentInstance* Instance = Entry.EquipmentInstance)
+        {
+            if (Instance->IsA(EquipmentType))
+            {
+                EquipmentInstances.Add(Instance);
+            }
+        }
+    }
+	
+    return EquipmentInstances;
 }

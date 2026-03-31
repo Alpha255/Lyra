@@ -58,6 +58,8 @@ public:
 
     ULyraEquipmentInstance* AddEntry(TSubclassOf<ULyraEquipmentDefinition> Equipment);
 private:
+    friend class ULyraEquipmentManagerComponent;
+
     class ULyraAbilitySystemComponent* GetAbilitySystemComponent() const;
 
     UPROPERTY()
@@ -87,8 +89,20 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     class ULyraEquipmentInstance* EquipItem(TSubclassOf<class ULyraEquipmentDefinition> EquipmentClass);
 
+    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+    void UnequipItem(ULyraEquipmentInstance* Instance);
+
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    ULyraEquipmentInstance* GetFirstInstanceOfType(TSubclassOf<ULyraEquipmentInstance> EquipmentType);
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	TArray<class ULyraEquipmentInstance*> GetEquipmentInstancesOfType(TSubclassOf<ULyraEquipmentInstance> EquipmentType) const;
+
+    template<class T>
+    T* GetFirstInstanceOfType()
+    {
+        return (T*)GetFirstInstanceOfType(T::StaticClass());
+    }
 private:
     UPROPERTY(Replicated)
     FLyraEquipmentList EquipmentList;

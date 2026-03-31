@@ -43,6 +43,7 @@ public class LyraGame : ModuleRules
 				"NetCore",
                 "GameplayMessageRuntime",
                 "CommonInput",
+                "UMG"
             }
 		);
 	}
