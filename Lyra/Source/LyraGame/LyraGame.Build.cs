@@ -39,9 +39,12 @@ public class LyraGame : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[] {
 				"InputCore",
+                "Slate",
+                "SlateCore",
                 "EnhancedInput",
 				"NetCore",
                 "GameplayMessageRuntime",
+                "CommonUI",
                 "CommonInput",
                 "UMG"
             }
