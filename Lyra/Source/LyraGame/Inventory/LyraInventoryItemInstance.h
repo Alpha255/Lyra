@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class LYRAGAME_API ULyraInventoryItemInstance : public UObject
 {
 	GENERATED_BODY()
