@@ -18,7 +18,8 @@
 				"PhysicsCore",
 				"GameplayAbilities",
 				"GameFeatures",
-				"CommonUI"
+				"CommonUI",
+				"UMG"
 			]
 		},
 		{
