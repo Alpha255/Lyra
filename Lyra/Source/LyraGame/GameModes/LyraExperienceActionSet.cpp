@@ -45,3 +45,5 @@ void ULyraExperienceActionSet::UpdateAssetBundleData()
     }
 }
 #endif
+
+#undef LOCTEXT_NAMESPACE
