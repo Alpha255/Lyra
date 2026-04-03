@@ -5,6 +5,7 @@
 #include "GameFeaturesSubsystemSettings.h"
 #include "Engine/GameInstance.h"
 #include "Components/GameFrameworkComponentManager.h"
+#include "UI/LyraHUD.h"
 
 #if WITH_EDITOR
 #include "Misc/DataValidation.h"
@@ -85,7 +86,11 @@ void UGameFeatureAction_AddWidget::AddToWorld(const FWorldContext& WorldContext,
     {
         if (auto CompMgr = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance))
         {
+            TSoftClassPtr<AActor> HUDActor = ALyraHUD::StaticClass();
 
+            auto CompRequestHandle = CompMgr->AddExtensionHandler(HUDActor, 
+                UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(this, &ThisClass::HandleActorExtension, ChangeContext));
+            ActiveData.ComponentRequests.Add(CompRequestHandle);
         }
     }
 }
@@ -101,7 +106,7 @@ void UGameFeatureAction_AddWidget::Reset(FPerContextData& ActiveData)
     ActiveData.ActorData.Empty();
 }
 
-void UGameFeatureAction_AddWidget::HandleActorExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext& ChangeContext)
+void UGameFeatureAction_AddWidget::HandleActorExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext)
 {
     FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
     if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName == UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -116,10 +121,38 @@ void UGameFeatureAction_AddWidget::HandleActorExtension(AActor* Actor, FName Eve
 
 void UGameFeatureAction_AddWidget::AddWidgets(AActor* Actor, FPerContextData& ActiveData)
 {
+    auto HUD = CastChecked<ALyraHUD>(Actor);
+    if (!HUD->GetOwningPlayerController())
+    {
+        return;
+    }
+
+    if (auto LocalPlayer = Cast<ULocalPlayer>(HUD->GetOwningPlayerController()->Player))
+    {
+        auto& ActorData = ActiveData.ActorData.FindOrAdd(HUD);
+
+        for (const auto& Entry : Layout)
+        {
+
+        }
+    }
 }
 
 void UGameFeatureAction_AddWidget::RemoveWidgets(AActor* Actor, FPerContextData& ActiveData)
 {
+    auto HUD = CastChecked<ALyraHUD>(Actor);
+    if (FPerActorData* ActorData = ActiveData.ActorData.Find(HUD))
+    {
+        for (auto& AddedLayout : ActorData->LayoutsAdded)
+        {
+            if (AddedLayout.IsValid())
+            {
+                AddedLayout->DeactivateWidget();
+            }
+        }
+
+        ActiveData.ActorData.Remove(HUD);
+    }
 }
 
 #undef LOCTEXT_NAMESPACE

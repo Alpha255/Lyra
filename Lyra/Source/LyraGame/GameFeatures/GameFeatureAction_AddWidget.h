@@ -71,7 +71,7 @@ private:
 
     void Reset(FPerContextData& ActiveData);
 
-    void HandleActorExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext& ChangeContext);
+    void HandleActorExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext);
 
     void AddWidgets(AActor* Actor, FPerContextData& ActiveData);
     void RemoveWidgets(AActor* Actor, FPerContextData& ActiveData);
