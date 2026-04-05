@@ -9,9 +9,19 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Config=Game)
 class LYRAGAME_API ALyraHUD : public AHUD
 {
 	GENERATED_BODY()
 	
+public:
+    ALyraHUD(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+protected:
+    virtual void PreInitializeComponents() override;
+
+    virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+    virtual void GetDebugActorList(TArray<AActor*>& InOutList) override;
 };

@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, BlueprintType, Blueprintable, Meta = (DisplayName = "Lyra HUD Layout", Category = "Lyra|HUD"))
 class LYRAGAME_API ULyraHUDLayout : public ULyraActivatableWidget
 {
 	GENERATED_BODY()

@@ -15,6 +15,7 @@
 #include "GameModes/LyraExperienceDefinition.h"
 #include "System/LyraAssetManager.h"
 #include "LyraLogChannel.h"
+#include "UI/LyraHUD.h"
 
 ALyraGameMode::ALyraGameMode(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -23,6 +24,7 @@ ALyraGameMode::ALyraGameMode(const FObjectInitializer& ObjectInitializer)
 	DefaultPawnClass = ALyraCharacter::StaticClass();
 	PlayerControllerClass = ALyraPlayerController::StaticClass();
 	PlayerStateClass = ALyraPlayerState::StaticClass();
+    HUDClass = ALyraHUD::StaticClass();
 }
 
 void ALyraGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
