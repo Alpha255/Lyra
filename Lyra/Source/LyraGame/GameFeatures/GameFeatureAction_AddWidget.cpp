@@ -24,7 +24,7 @@ void UGameFeatureAction_AddWidget::OnGameFeatureDeactivating(FGameFeatureDeactiv
 }
 
 #if WITH_EDITORONLY_DATA
-void UGameFeatureAction_AddWidget::AddAdditionalAssetBundleData(FAssetBundleData & AssetBundleData)
+void UGameFeatureAction_AddWidget::AddAdditionalAssetBundleData(FAssetBundleData& AssetBundleData)
 {
     for (const auto& Entry : Widgets)
     {
@@ -34,7 +34,7 @@ void UGameFeatureAction_AddWidget::AddAdditionalAssetBundleData(FAssetBundleData
 #endif
 
 #if WITH_EDITOR
-EDataValidationResult UGameFeatureAction_AddWidget::IsDataValid(FDataValidationContext & Context) const
+EDataValidationResult UGameFeatureAction_AddWidget::IsDataValid(FDataValidationContext& Context) const
 {
     EDataValidationResult Result = CombineDataValidationResults(Super::IsDataValid(Context), EDataValidationResult::Valid);
 
@@ -42,7 +42,7 @@ EDataValidationResult UGameFeatureAction_AddWidget::IsDataValid(FDataValidationC
     {
         auto& Entry = Layout[Index];
 
-        if (!Entry.LayoutClass.IsValid())
+        if (Entry.LayoutClass.IsNull())
         {
             Result = EDataValidationResult::Invalid;
             Context.AddError(FText::Format(LOCTEXT("LayoutHasNullClass", "Null WidgetClass at index {0} in Layout"), FText::AsNumber(Index)));
@@ -59,7 +59,7 @@ EDataValidationResult UGameFeatureAction_AddWidget::IsDataValid(FDataValidationC
     {
         auto& Entry = Widgets[Index];
 
-        if (!Entry.WidgetClass.IsValid())
+        if (Entry.WidgetClass.IsNull())
         {
             Result = EDataValidationResult::Invalid;
             Context.AddError(FText::Format(LOCTEXT("EntryHasNullClass", "Null WidgetClass at index {0} in Widgets"), FText::AsNumber(Index)));
@@ -72,7 +72,7 @@ EDataValidationResult UGameFeatureAction_AddWidget::IsDataValid(FDataValidationC
         }
     }
 
-    return EDataValidationResult();
+    return Result;
 }
 #endif
 
@@ -133,7 +133,9 @@ void UGameFeatureAction_AddWidget::AddWidgets(AActor* Actor, FPerContextData& Ac
 
         for (const auto& Entry : Layout)
         {
-
+            if (TSubclassOf<UCommonActivatableWidget> LayoutClass = Entry.LayoutClass.Get())
+            {
+            }
         }
     }
 }

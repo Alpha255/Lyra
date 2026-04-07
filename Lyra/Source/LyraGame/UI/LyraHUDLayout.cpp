@@ -21,17 +21,37 @@ ULyraHUDLayout::ULyraHUDLayout(const FObjectInitializer& ObjectInitializer)
     , SpawndControllerDisconnectScreen(nullptr)
 {
     PlatformControllerDisconnectTag.AddTag(TAG_Platform_Trait_Input_PrimarlyController);
-
-    RegisterUIActionBinding(FBindUIActionArgs(FUIActionTag::ConvertChecked(TAG_UI_ACTION_ESCAPE), false, FSimpleDelegate::CreateUObject(this, &ThisClass::OnEscapeAction)));
 }
 
 void ULyraHUDLayout::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
+
+    RegisterUIActionBinding(FBindUIActionArgs(FUIActionTag::ConvertChecked(TAG_UI_ACTION_ESCAPE), false, 
+        FSimpleDelegate::CreateUObject(this, &ThisClass::OnEscapeAction)));
+
+    if (ShouldDisplayControllerDisconnectScreen())
+    {
+        auto& DeviceMgr = IPlatformInputDeviceMapper::Get();
+        DeviceMgr.GetOnInputDeviceConnectionChange().AddUObject(this, &ThisClass::OnInputDeviceConnectionChanged);
+        DeviceMgr.GetOnInputDevicePairingChange().AddUObject(this, &ThisClass::OnInputDevicePairingChanged);
+    }
 }
 
 void ULyraHUDLayout::NativeDestruct()
-{}
+{
+    Super::NativeDestruct();
+
+    auto& DeviceMgr = IPlatformInputDeviceMapper::Get();
+    DeviceMgr.GetOnInputDeviceConnectionChange().RemoveAll(this);
+    DeviceMgr.GetOnInputDevicePairingChange().RemoveAll(this);
+
+    if (RequestProcessControllerStateDelegate.IsValid())
+    {
+        FTSTicker::GetCoreTicker().RemoveTicker(RequestProcessControllerStateDelegate);
+        RequestProcessControllerStateDelegate.Reset();
+    }
+}
 
 void ULyraHUDLayout::OnEscapeAction()
 {}
