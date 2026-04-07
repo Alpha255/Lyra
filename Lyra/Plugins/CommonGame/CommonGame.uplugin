@@ -21,10 +21,14 @@
 			"LoadingPhase": "Default"
 		}
 	],
-	"Plugins": [
-		{
-			"Name": "ModularGameplayActors",
-			"Enabled": true
-		}
-	]
+    "Plugins": [
+        {
+            "Name": "CommonUI",
+            "Enabled": true
+        },
+        {
+            "Name": "ModularGameplayActors",
+            "Enabled": true
+        }
+    ]
 }
