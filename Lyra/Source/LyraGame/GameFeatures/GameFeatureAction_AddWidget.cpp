@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "UI/LyraHUD.h"
+#include "CommonUIBlueprintFunctionLibrary.h"
 
 #if WITH_EDITOR
 #include "Misc/DataValidation.h"
@@ -135,6 +136,7 @@ void UGameFeatureAction_AddWidget::AddWidgets(AActor* Actor, FPerContextData& Ac
         {
             if (TSubclassOf<UCommonActivatableWidget> LayoutClass = Entry.LayoutClass.Get())
             {
+                ActorData.LayoutsAdded.Add(UCommonUIBlueprintFunctionLibrary::PushWidgetToLayerStack(LocalPlayer, Entry.LayerID, LayoutClass));
             }
         }
     }

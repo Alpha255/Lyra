@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "GameUIManagerSubsystem.h"
 #include "LyraWidgetsSubsystem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LYRAGAME_API ULyraWidgetsSubsystem : public UWorldSubsystem
+class LYRAGAME_API ULyraWidgetsSubsystem : public UGameUIManagerSubsystem
 {
 	GENERATED_BODY()
 	
