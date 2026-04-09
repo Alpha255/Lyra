@@ -48,6 +48,12 @@ protected:
     void CreateLayoutWidget(class UCommonLocalPlayer* LocalPlayer);
     TSubclassOf<class UCommonHUDLayout> GetLayoutWidgetClass(class UCommonLocalPlayer* LocalPlayer);
 private:
+    friend class UGameUIManagerSubsystem;
+
+    void OnAddLocalPlayer(UCommonLocalPlayer* NewPlayer);
+    void OnRemoveLocalPlayer(UCommonLocalPlayer* Player);
+    void OnDestroyLocalPlayer(UCommonLocalPlayer* Player);
+
     UPROPERTY(EditAnywhere)
     TSoftClassPtr<class UCommonHUDLayout> LayoutClass;
 

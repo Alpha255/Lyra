@@ -29,6 +29,11 @@ void UGameUIPolicy::AddLayoutToViewport(UCommonLocalPlayer* LocalPlayer, UCommon
 
 void UGameUIPolicy::RemoveLayoutFromViewport(UCommonLocalPlayer* LocalPlayer, UCommonHUDLayout* Layout)
 {
+    TWeakPtr<SWidget> Widget = Layout->GetCachedWidget();
+    if (Widget.IsValid())
+    {
+        Layout->RemoveFromParent();
+    }
 }
 
 void UGameUIPolicy::CreateLayoutWidget(UCommonLocalPlayer* LocalPlayer)
@@ -49,4 +54,40 @@ void UGameUIPolicy::CreateLayoutWidget(UCommonLocalPlayer* LocalPlayer)
 TSubclassOf<UCommonHUDLayout> UGameUIPolicy::GetLayoutWidgetClass(UCommonLocalPlayer* LocalPlayer)
 {
     return LayoutClass.LoadSynchronous();
+}
+
+void UGameUIPolicy::OnAddLocalPlayer(UCommonLocalPlayer* NewPlayer)
+{
+    auto AddLayoutWidget = [this](UCommonLocalPlayer* LocalPlayer) {
+        if (auto LayoutInfo = RootViewportLayouts.FindByKey(LocalPlayer))
+        {
+            AddLayoutToViewport(LocalPlayer, LayoutInfo->RootLayout);
+            LayoutInfo->bAddedToViewport = true;
+        }
+        else
+        {
+            CreateLayoutWidget(LocalPlayer);
+        }
+    };
+
+    NewPlayer->OnSetPlayerController.AddWeakLambda(this, [this, AddLayoutWidget](UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController) {
+        OnRemoveLocalPlayer(LocalPlayer);
+        AddLayoutWidget(LocalPlayer);
+    });
+
+    AddLayoutWidget(NewPlayer);
+}
+
+void UGameUIPolicy::OnRemoveLocalPlayer(UCommonLocalPlayer* Player)
+{
+    if (auto LayoutInfo = RootViewportLayouts.FindByKey(Player))
+    {
+        RemoveLayoutFromViewport(Player, LayoutInfo->RootLayout);
+        LayoutInfo->bAddedToViewport = false;
+    }
+}
+
+void UGameUIPolicy::OnDestroyLocalPlayer(UCommonLocalPlayer* Player)
+{
+    OnRemoveLocalPlayer(Player);
 }

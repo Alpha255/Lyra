@@ -15,6 +15,8 @@ void ACommonPlayerController::ReceivedPlayer()
 
 	if (auto LocalPlayer = Cast<UCommonLocalPlayer>(Player))
 	{
+        LocalPlayer->OnSetPlayerController.Broadcast(LocalPlayer, this);
+
 		if (PlayerState)
 		{
 		}

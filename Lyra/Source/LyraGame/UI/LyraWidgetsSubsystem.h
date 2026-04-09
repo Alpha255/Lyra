@@ -14,5 +14,10 @@ UCLASS()
 class LYRAGAME_API ULyraWidgetsSubsystem : public UGameUIManagerSubsystem
 {
 	GENERATED_BODY()
-	
+
+public:
+    ULyraWidgetsSubsystem();
+
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Deinitialize() override;
 };
